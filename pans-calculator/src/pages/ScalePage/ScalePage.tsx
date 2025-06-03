@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import './ScalePage.scss';
-import CalculatorForm from '../../components/sections/CalculatorForm';
+import CalculatorForm from '../../components/CalculatorForm';
 
 const ScalePage: React.FC = () => {
   return (

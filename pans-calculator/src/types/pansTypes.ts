@@ -22,3 +22,9 @@ export interface PansScores {
   functionalScore: number;     // 0–50
   totalScore: number;          // 0–100
 }
+
+export interface PansFormData {
+  ocdSymptoms: SymptomGroup[];
+  associatedSymptoms: SymptomGroup[];
+  functionalImpairment: SymptomGroup[];
+}
