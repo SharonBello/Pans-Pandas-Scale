@@ -1,0 +1,26 @@
+@import '../../styles/variables';
+
+.scale-root {
+  padding: 2rem 1rem;
+  background-color: $color-bg-light;
+  min-height: 100vh;
+}
+
+.scale-title {
+  font-family: $font-header;
+  color: $color-blue-primary-dark;
+  margin-top: 2rem;
+}
+
+.scale-explanation {
+  font-family: $font-body;
+  color: $color-dark-gray;
+  margin-bottom: 2rem;
+}
+
+.scale-form-box {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba($color-gray, 0.1);
+  padding: 2rem;
+}

@@ -1,0 +1,142 @@
+@import '../../styles/variables';
+
+// שורש העמוד
+.homepage-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $color-bg-light;
+}
+
+// Hero Section
+.homepage-hero {
+  position: relative;
+  background-image: url('../../styles/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-gray-light;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color-blue-primary-dark, 0.6);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .hero-title {
+    font-family: $font-header;
+    font-size: 2.75rem;
+    margin-bottom: 1rem;
+
+    @media (min-width: 600px) {
+      font-size: 3.5rem;
+    }
+  }
+
+  .hero-subtitle {
+    font-family: $font-body;
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+
+    @media (min-width: 600px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .hero-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .hero-button {
+    background-color: $color-blue-accent;
+    color: $color-gray-light;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-family: $font-header;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba($color-blue-primary-dark, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      background-color: lighten($color-blue-accent, 5%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba($color-blue-primary-dark, 0.3);
+    }
+  }
+
+  .info-button {
+    color: $color-gray-light;
+    background-color: rgba($color-gray-light, 0.2);
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($color-gray-light, 0.4);
+    }
+  }
+}
+
+// סגנונות ה־Modal (Popup)
+.info-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba($color-gray, 0.2);
+  text-align: center;
+
+  .modal-text {
+    font-family: $font-body;
+    font-size: 1rem;
+    color: $color-dark-gray;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .modal-close {
+    background-color: $color-blue-primary;
+    color: $color-gray-light;
+    font-family: $font-header;
+
+    &:hover {
+      background-color: darken($color-blue-primary, 5%);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .homepage-hero {
+    min-height: 60vh;
+
+    .hero-title {
+      font-size: 2rem !important;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem !important;
+    }
+  }
+}

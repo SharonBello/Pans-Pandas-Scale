@@ -1,0 +1,52 @@
+@import '../../styles/variables';
+
+.header-container {
+  background-color: $color-blue-primary !important;
+  color: $color-gray-light;
+  box-shadow: none;
+}
+
+.header-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem;
+  min-height: 64px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo-button {
+  margin-right: 0.75rem;
+  padding: 0.25rem;
+  & .header-logo {
+    width: 32px;
+    height: 32px;
+    fill: $color-gray-light;
+  }
+}
+
+.header-title {
+  font-family: $font-header;
+  font-size: 1.5rem;
+  color: $color-gray-light;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media print {
+  .header-container,
+  .header-toolbar,
+  .header-left,
+  .header-right {
+    display: none !important;
+  }
+}

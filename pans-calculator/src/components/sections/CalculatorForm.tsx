@@ -1,18 +1,18 @@
 // src/components/CalculatorForm.tsx
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
+  Box,
   Button,
   Paper,
   Typography,
   Divider,
-  Box,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   LinearProgress,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useNavigate } from 'react-router-dom';
 import { PansFormData, SymptomGroup } from '../../types/pansTypes';
 import { computeScores } from '../../utils/computeScores';
 import OCDSection from './OCDSection';
@@ -21,43 +21,139 @@ import FunctionalSection from './FunctionalSection';
 
 
 const CalculatorForm: React.FC = () => {
-  // 1. סטייטים התחלתיים
+  const navigate = useNavigate();
+
   const ocdInitial: SymptomGroup[] = [
-    { id: 'ocd_contamination', label: 'דאגות לגבי לכלוך וחיידקים', rating: 0 },
-    { id: 'ocd_harm', label: 'דאגות לגבי פגיעה בעצמי/בזולת', rating: 0 },
-    { id: 'ocd_sex_religion', label: 'דאגות לגבי מחשבות מיניות/דתיות', rating: 0 },
-    { id: 'ocd_symmetry', label: 'דאגות לגבי סימטריה וסדר', rating: 0 },
-    { id: 'ocd_hoarding', label: 'דאגות לגבי איסוף ואגירה', rating: 0 },
-    { id: 'ocd_eating', label: 'תסמיני אכילה מוגבל/מניעתי', rating: 0 },
-    { id: 'ocd_misc', label: `סימפטומים "מנטליים" נוספים`, rating: 0 },
+    {
+      id: 'ocd_contamination',
+      label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי לכלוך וחיידקים, וכפייתיות רחצה קשורה.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_harm',
+      label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי פגיעה בעצמי או בזולת, וכפייתיות קשורה; צורך להיזהר מפגיעה או לספר/להתוודות.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_sex_religion',
+      label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי מחשבות או התנהגויות מיניות או דתיות, וטקסים כפייתיים קשורים.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_symmetry',
+      label: 'דאגות טורדניות לגבי סימטריה וכפייתיות קשורה: סידור, ספירה או ארגון; צורך לגעת, להקיש או לשפשף; או צורך שדברים ירגישו/ייראו/יישמעו בדיוק נכון.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_hoarding',
+      label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי איסוף ואגירה.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_eating',
+      label: 'תסמיני צריכת מזון מגבילה ו/או נמנעת; הפרעת אכילה או האכלה (לרבות, אך לא רק: חוסר עניין לכאורה באכילה או במזון; הימנעות המבוססת על מאפיינים תחושתיים של המזון; או דאגה לגבי השלכות שליליות של אכילה) המובילה לסירוב לאכול (אנורקסיה לא טיפוסית) או לירידה ניכרת בצריכת המזון.',
+      rating: 0,
+    },
+    {
+      id: 'ocd_misc',
+      label: 'שונות: צורך לדעת או לזכור; פחד מלומר דברים מסוימים; פחד לא לומר בדיוק את הדבר הנכון; דימויים חודרניים (לא אלימים); צלילים, מילים, מוזיקה או מספרים חודרניים; צורך לחזור על פעולות (למשל, להיכנס ולצאת מפתח דלת, לקום ולשבת מכיסא); צורך לערב אדם אחר בטקס (למשל, לבקש מהורה לענות שוב ושוב על אותה שאלה); טקסים מנטליים שאינם בדיקה/ספירה; הכנת רשימות מוגזמת; או אחר (פרטו).',
+      rating: 0,
+    },
   ];
+
   const associatedInitial: SymptomGroup[] = [
-    { id: 'assoc_separation', label: 'חרדת נטישה', rating: 0 },
-    { id: 'assoc_general_anxiety', label: 'חרדה כללית', rating: 0 },
-    { id: 'assoc_phobias', label: 'פחדים/פוביות', rating: 0 },
-    { id: 'assoc_panic', label: 'התקפי פאניקה', rating: 0 },
-    { id: 'assoc_mood_changes', label: 'תנודות קיצוניות במצב רוח', rating: 0 },
-    { id: 'assoc_irritability', label: 'רגזנות/תקיפה', rating: 0 },
-    { id: 'assoc_cognitive', label: 'קשיי למידה/בלבול', rating: 0 },
-    { id: 'assoc_withdrawal', label: 'נסיגה התנהגותית', rating: 0 },
-    { id: 'assoc_sensory', label: 'תסמינים תחושתיים', rating: 0 },
-    { id: 'assoc_hallucinations', label: 'הזיות', rating: 0 },
-    { id: 'assoc_motor', label: 'תסמינים מוטוריים (טיקים)', rating: 0 },
-    { id: 'assoc_urinary', label: 'תסמיני מערכת השתן', rating: 0 },
-    { id: 'assoc_sleep', label: 'הפרעות שינה/עייפות', rating: 0 },
-    { id: 'assoc_pupil', label: 'אישונים מורחבים', rating: 0 },
+    {
+      id: 'assoc_separation',
+      label: 'חרדת נטישה – צורך לשמור על קרבה לאדם, למקום מוכר או לחפץ.',
+      rating: 0,
+    },
+    { id: 'assoc_general_anxiety', label: 'חרדה כללית.', rating: 0 },
+    { id: 'assoc_phobias', label: 'פחדים ו/או פוביות לא רציונליים וחסרי בסיס.', rating: 0 },
+    { id: 'assoc_panic', label: 'התקפי פאניקה.', rating: 0 },
+
+    {
+      id: 'assoc_mood_changes',
+      label: 'קשיי ויסות רגשי, דיכאון – קשיי ויסות רגשי (תנודות קיצוניות במצב הרוח), ודיכאון עם או בלי מחשבות אובדניות.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_irritability',
+      label: 'רגזנות מוגברת או התנהגות תוקפנית – דרישות מתריסות/לא הגיוניות; התנהגות תוקפנית תגובתית, התקפי זעם או התפרצויות.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_withdrawal',
+      label: 'נסיגה התנהגותית ("דיבור תינוקי", התנהגות שאינה אופיינית לגיל הכרונולוגי); שינוי באישיות.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_school_function',
+      label: 'תפקוד בבית הספר, ריכוז / למידה – קשיים בקשב, בריכוז או בלמידה; אובדן מיומנויות אקדמיות; בלבול.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_sensory',
+      label: 'תסמינים תחושתיים – רגישות מוגברת לאור, לאופן שבו דברים "מרגישים" (למשל תוויות בבגדים), או "נשמעים"; צורך לגעת בדברים בצורה מסוימת; עיוות מרחבי (למשל, חפצים נראים קרובים יותר ממה שהם באמת); רגישות לריח או טעם.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_hallucinations',
+      label: 'הזיות ראייה או שמיעה.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_motor',
+      label: 'תסמינים מוטוריים – דיסגרפיה (אובדן יכולת לצייר/להעתיק/לכתוב); היפראקטיביות מוטורית או תנועות חריגות/בלתי רצוניות (הקשות, היפוכים וכו\'); תנועות אצבעות "כמו נגינה בפסנתר"; טיקים מוטוריים או קוליים (פשוטים או מורכבים, כולל חזרה על מילים או פעולות גסות).',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_urinary',
+      label: 'תסמינים במערכת השתן – תכיפות במתן שתן או דחיפות מוגברת במתן שתן, ביום או בלילה; חוסר יכולת לתת שתן.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_sleep',
+      label: 'הפרעות שינה, עייפות – בעיות שינה (טקסי שינה ארוכים, נדודי שינה, חוסר יכולת לישון; ישנוניות יתר, סיוטים) או עייפות רבה/תשישות קיצונית.',
+      rating: 0,
+    },
+
+    {
+      id: 'assoc_pupil',
+      label: 'אישונים מורחבים – "מבט מבועת".',
+      rating: 0,
+    },
   ];
+
   const functionalInitial: SymptomGroup[] = [
-    { id: 'functional_impairment', label: 'פגיעה תפקודית (0–5)', rating: 0 },
+    {
+      id: 'functional_impairment',
+      label:
+        `פגיעה תפקודית כללית:  
+(0 = אין; 1 = מינימלית; 2 = קלה; 3 = בינונית; 4 = חמורה; 5 = קיצונית).  
+תיאור רמות:  
+• 0 – אין פגיעה: תפקוד רגיל (לימודים, בית, חברים).  
+• 1 – מינימלית (10): מינימום הפרעות בתפקוד יומיומי; התנהלות עצמאית.  
+• 2 – קלה (20): הפרעות קלות בתפקוד (קושי קל בלמידה, שינוי קל בהתנהגות או חוסר עניין בפעילות).  
+• 3 – בינונית (30): הפרעות ממוצעות בתפקוד (קושי משמעותי בלימודים, שינוי משמעותי בהתנהגות החברתית, נסיגה מסוימת מחברים ופעילויות).  
+• 4 – חמורה (40): הפרעות חמורות בתפקוד (אי יכולת לשוב ללימודים, הימנעות מלאה ממשימות יומיומיות, שינוי מהותי בהתנהגות החברתית).  
+• 5 – קיצונית (50): פגיעה תפקודית קיצונית, חוסר יכולת כמעט מוחלט לבצע פעולות יומיומיות, מצוקה קשה, צורך בסיוע צמוד.`,
+      rating: 0,
+    },
   ];
 
   const [ocdSymptoms, setOcdSymptoms] = useState<SymptomGroup[]>(ocdInitial);
   const [associatedSymptoms, setAssociatedSymptoms] = useState<SymptomGroup[]>(associatedInitial);
   const [functionalImpairment, setFunctionalImpairment] = useState<SymptomGroup[]>(functionalInitial);
 
-  const [scores, setScores] = useState<null | ReturnType<typeof computeScores>>(null);
-
-  // 2.שימור וטעינת נתונים מה־LocalStorage
+  // 2. שמירה וטעינת LocalStorage (כמו קודם)
   useEffect(() => {
     const savedOCD = localStorage.getItem('ocdSymptoms');
     if (savedOCD) {
@@ -119,23 +215,22 @@ const CalculatorForm: React.FC = () => {
     setFunctionalImpairment([{ id, label: functionalImpairment[0].label, rating: value as any }]);
   };
 
+  // 5. חישוב הניקוד וסיום
   const handleCalculate = () => {
     const formData: PansFormData = {
       ocdSymptoms,
       associatedSymptoms,
       functionalImpairment,
     };
-    const result = computeScores(formData);
-    setScores(result);
+    const scores = computeScores(formData);
+
+    // ננווט לדף התוצאות (/results) ונעביר בתור state את formData + scores
+    navigate('/results', { state: { formData, scores } });
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        מחשבון מדד PANS/PANDAS
-      </Typography>
-
-      {/* 4.1. סרגל התקדמות */}
+    <Box>
+      {/* 5.1. סרגל התקדמות */}
       <Box sx={{ width: '100%', mb: 2 }}>
         <Typography variant="body2" color="textSecondary" align="right">
           {`${progressPercent}% הושלם`}
@@ -144,7 +239,7 @@ const CalculatorForm: React.FC = () => {
       </Box>
 
       <Paper elevation={3} sx={{ p: 3 }}>
-        {/* 4.2. מדור I: OCD בתוך אקורדיון */}
+        {/* 5.2. מדור I: OCD בתוך אקורדיון */}
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h6">I. תסמיני OCD</Typography>
@@ -156,7 +251,7 @@ const CalculatorForm: React.FC = () => {
 
         <Divider sx={{ my: 2 }} />
 
-        {/* 4.3. מדור II: סימפטומים נלווים בתוך אקורדיון */}
+        {/* 5.3. מדור II: סימפטומים נלווים בתוך אקורדיון */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h6">II. תסמינים נלווים</Typography>
@@ -171,7 +266,7 @@ const CalculatorForm: React.FC = () => {
 
         <Divider sx={{ my: 2 }} />
 
-        {/* 4.4. מדור III: פגיעה תפקודית בתוך אקורדיון */}
+        {/* 5.4. מדור III: פגיעה תפקודית בתוך אקורדיון */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h6">III. פגיעה תפקודית</Typography>
@@ -184,48 +279,14 @@ const CalculatorForm: React.FC = () => {
           </AccordionDetails>
         </Accordion>
 
-        {/* 4.5. כפתור חישוב */}
+        {/* 5.5. כפתור חישוב */}
         <Box textAlign="center" sx={{ mt: 3 }}>
           <Button variant="contained" color="primary" onClick={handleCalculate}>
             חשב ניקוד
           </Button>
         </Box>
       </Paper>
-
-      {/* 4.6. הצגת תוצאות (עטוף בתוך div עם id ספציפי) */}
-      {scores && (
-        <Box sx={{ mt: 4 }}>
-          {/* div הזה הוא מה שברצוננו להדפיס */}
-          <div id="printable-area">
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6">תוצאות החישוב:</Typography>
-              <Typography>ניקוד OCD: {scores.ocdScore} מתוך 25</Typography>
-              <Typography>
-                ניקוד סימפטומים נלווים: {scores.associatedScore} מתוך 25
-              </Typography>
-              <Typography>
-                ניקוד פגיעה תפקודית: {scores.functionalScore} מתוך 50
-              </Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography variant="h5">
-                ניקוד כולל: {scores.totalScore} מתוך 100
-              </Typography>
-            </Paper>
-          </div>
-
-          {/* 4.7. כפתור הדפסה פשוט */}
-          <Box textAlign="center" sx={{ mt: 2 }}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => window.print()}
-            >
-              הדפס / ייצא PDF
-            </Button>
-          </Box>
-        </Box>
-      )}
-    </Container>
+    </Box>
   );
 };
 

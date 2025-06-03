@@ -1,0 +1,24 @@
+@import '../../styles/variables';
+
+.MuiTable-root {
+  border: 1px solid $color-gray-medium;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.MuiTableCell-root {
+  border-bottom: 1px solid $color-gray-light;
+}
+
+.MuiTableHead-root th {
+  background-color: $color-blue-primary-light;
+  color: $color-gray-light;
+}
+
+.MuiTableBody-root tr:nth-of-type(odd) {
+  background-color: $color-bg-light;
+}
+
+.MuiFormControlLabel-root {
+  margin: 0 auto;
+}
