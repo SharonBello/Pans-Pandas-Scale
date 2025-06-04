@@ -1,0 +1,36 @@
+.question-card {
+  max-width: 800px;
+  margin: 16px auto;
+  border-radius: 12px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+
+  .question-card__label {
+    font-size: 1.2rem;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    text-align: right; /* יישור לימין כיוון RTL */
+  }
+
+  .question-card__rating-container {
+    padding: 0 8px 16px 8px;
+    direction: rtl;
+  }
+
+  @media (max-width: 600px) {
+    margin: 12px 8px;
+
+    .question-card__label {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+  }
+
+  @media (min-width: 601px) and (max-width: 900px) {
+    margin: 16px 16px;
+
+    .question-card__label {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+  }
+}

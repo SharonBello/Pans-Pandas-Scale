@@ -1,57 +1,72 @@
-// src/components/CalculatorForm.tsx
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { SymptomGroup, PansFormData, RatingValue } from '../types/pansTypes';
-import { computeScores } from '../utils/computeScores';
-import SurveySection from './SurveySection';
+
+import './sections/Sections.scss';
+import { PansFormData, RatingValue, SymptomGroup } from '../types/pansTypes';
+import SurveySection from './SurveySection/SurveySection';
 import FunctionalSection from './sections/FunctionalSection';
-import './sections/Sections.scss'
+import { computeScores } from '../utils/computeScores';
 
 const CalculatorForm: React.FC = () => {
   const navigate = useNavigate();
 
+  // 1. הגדרת הנתונים ההתחלתיים לכל קבוצה
   const ocdInitial: SymptomGroup[] = [
     {
       id: 'ocd_contamination',
       label:
         'דאגות (חרדות) טורדניות ומתמשכות לגבי לכלוך וחיידקים, וכפייתיות רחצה קשורה.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_harm',
       label:
         'דאגות (חרדות) טורדניות ומתמשכות לגבי פגיעה בעצמי או בזולת, וכפייתיות קשורה; צורך להיזהר מפגיעה או לספר/להתוודות.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_sex_religion',
       label:
         'דאגות (חרדות) טורדניות ומתמשכות לגבי מחשבות או התנהגויות מיניות או דתיות, וטקסים כפייתיים קשורים.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_symmetry',
       label:
         'דאגות טורדניות לגבי סימטריה וכפייתיות קשורה: סידור, ספירה או ארגון; צורך לגעת, להקיש או לשפשף; או צורך שדברים ירגישו/ייראו/יישמעו בדיוק נכון.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_hoarding',
       label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי איסוף ואגירה.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_eating',
       label:
-        'תסמיני צריכת מזון מגבילה ו/או נמנעת; הפרעת אכילה או האכלה (לרבות, אך לא רק: חוסר עניין לכאורה באכילה או במזון; הימנעות המבוססת על מאפיינים תחושתיים של המזון; או דאגה לגבי השלכות שליליות של אכילה) המובילה לסירוב לאכול (אנורקסיה לא טיפוסית) או לירידה ניכרת בצריכת המזון.',
-      rating: 0,
+        'תסמיני צריכת מזון מגבילה ו/או נמנעת; הפרעת אכילה או האכלה (לרבות, חוסר עניין באכילה או במזון; הימנעות מבוססת על תחושות; דאגה לגבי השלכות) המובילה לסירוב לאכול (אנורקסיה לא טיפוסית).',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_misc',
       label:
-        'שונות: צורך לדעת או לזכור; פחד מלומר דברים מסוימים; פחד לא לומר בדיוק את הדבר הנכון; דימויים חודרניים (לא אלימים); צלילים, מילים, מוזיקה או מספרים חודרניים; צורך לחזור על פעולות (למשל, להיכנס ולצאת מפתח דלת, לקום ולשבת מכיסא); צורך לערב אדם אחר בטקס (למשל, לבקש מהורה לענות שוב ושוב על אותה שאלה); טקסים מנטליים שאינם בדיקה/ספירה; הכנת רשימות מוגזמת; או אחר (פרטו).',
-      rating: 0,
+        'שונות: צורך לדעת או לזכור; פחד מלומר/לא לומר דברים מסוימים; דימויים חודרניים; קולות חודרניים; צורך בטקסים חוזרים; צורך להכין רשימות; או אחרים (פרטו).',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
   ];
 
@@ -59,103 +74,146 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'assoc_separation',
       label: 'חרדת נטישה – צורך לשמור על קרבה לאדם, למקום מוכר או לחפץ.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
-    { id: 'assoc_general_anxiety', label: 'חרדה כללית.', rating: 0 },
-    { id: 'assoc_phobias', label: 'פחדים ו/או פוביות לא רציונליים וחסרי בסיס.', rating: 0 },
-    { id: 'assoc_panic', label: 'התקפי פאניקה.', rating: 0 },
+    {
+      id: 'assoc_general_anxiety',
+      label: 'חרדה כללית.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_phobias',
+      label: 'פחדים ו/או פוביות לא רציונליים וחסרי בסיס.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_panic',
+      label: 'התקפי פאניקה.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
     {
       id: 'assoc_mood_changes',
       label:
-        'קשיי ויסות רגשי, דיכאון – קשיי ויסות רגשי (תנודות קיצוניות במצב הרוח), ודיכאון עם או בלי מחשבות אובדניות.',
-      rating: 0,
+        'קשיי ויסות רגשי, דיכאון – תנודות קיצוניות במצב הרוח, ודיכאון עם או בלי מחשבות אובדניות.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_irritability',
       label:
-        'רגזנות מוגברת או התנהגות תוקפנית – דרישות מתריסות/לא הגיוניות; התנהגות תוקפנית תגובתית, התקפי זעם או התפרצויות.',
-      rating: 0,
+        'רגזנות מוגברת או תוקפנות – דרישות מתריסות, התקפי זעם או התפרצויות.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_withdrawal',
       label:
-        'נסיגה התנהגותית ("דיבור תינוקי", התנהגות שאינה אופיינית לגיל הכרונולוגי); שינוי באישיות.',
-      rating: 0,
+        'נסיגה התנהגותית (“דיבור תינוקי”, שינוי באישיות); חוסר רצון לאינטראקציה.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_school_function',
       label:
-        'תפקוד בבית הספר, ריכוז / למידה – קשיים בקשב, בריכוז או בלמידה; אובדן מיומנויות אקדמיות; בלבול.',
-      rating: 0,
+        'תפקוד בבית ספר, ריכוז/למידה – קשיים בקשב או בלמידה; בלבול; אובדן מיומנויות אקדמיות.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_sensory',
       label:
-        'תסמינים תחושתיים – רגישות מוגברת לאור, לאופן שבו דברים "מרגישים" (למשל תוויות בבגדים), או "נשמעים"; צורך לגעת בדברים בצורה מסוימת; עיוות מרחבי (למשל, חפצים נראים קרובים יותר ממה שהם באמת); רגישות לריח או טעם.',
-      rating: 0,
+        'תסמינים תחושתיים – רגישות לאור, טעם, ריח או מרקם; צורך לגעת בחפצים באופן ספציפי.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_hallucinations',
       label: 'הזיות ראייה או שמיעה.',
-      rating: 0,
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_motor',
-      label:
-        'תסמינים מוטוריים – דיסגרפיה (אובדן יכולת לצייר/להעתיק/לכתוב); היפראקטיביות מוטורית או תנועות חריגות/בלתי רצוניות (הקשות, היפוכים וכוʹ); תנועות אצבעות "כמו נגינה בפסנתר"; טיקים מוטוריים או קוליים (פשוטים או מורכבים, כולל חזרה על מילים או פעולות גסות).',
-      rating: 0,
+      label: 'תסמינים מוטוריים – דיסגרפיה, תנועות חריגות, טיקים מוטוריים או קוליים.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_urinary',
-      label:
-        'תסמינים במערכת השתן – תכיפות במתן שתן או דחיפות מוגברת במתן שתן, ביום או בלילה; חוסר יכולת לתת שתן.',
-      rating: 0,
+      label: 'תסמינים במערכת השתן – תכיפות או דחיפות בשתן, חוסר יכולת לתת שתן.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_sleep',
       label:
-        'הפרעות שינה, עייפות – בעיות שינה (טקסי שינה ארוכים, נדודי שינה, חוסר יכולת לישון; ישנוניות יתר, סיוטים) או עייפות רבה/תשישות קיצונית.',
-      rating: 0,
+        'הפרעות שינה, עייפות – נדודי שינה, ישנוניות יתר, סיוטים או תשישות קיצונית.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_pupil',
-      label: 'אישונים מורחבים – "מבט מבועת".',
-      rating: 0,
+      label: 'אישונים מורחבים – “מבט מבועת”.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
   ];
 
   const functionalInitial: SymptomGroup[] = [
     {
       id: 'functional_impairment',
-      label: 'פגיעה תפקודית', // הפרטים של תיאור הרמה בעמודה בטבלה עצמה
-      rating: 0,
+      label: 'פגיעה תפקודית (0–5)',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
     },
   ];
 
+  // 2. סטייט לכל מדור
   const [ocdAnswers, setOcdAnswers] = useState<SymptomGroup[]>([...ocdInitial]);
   const [assocAnswers, setAssocAnswers] = useState<SymptomGroup[]>([...associatedInitial]);
   const [funcAnswers, setFuncAnswers] = useState<SymptomGroup[]>([...functionalInitial]);
 
+  // 3. ניהול תצוגה: 0 = OCD, 1 = Associated, 2 = Functional, 3 = חישוב סופי
   const [sectionIndex, setSectionIndex] = useState<number>(0);
 
+  // 4. טעינה/שמירה ב־localStorage
   useEffect(() => {
     const savedOCD = localStorage.getItem('ocdSymptoms');
     if (savedOCD) {
       try {
         setOcdAnswers(JSON.parse(savedOCD));
-      } catch { }
+      } catch {}
     }
     const savedAssoc = localStorage.getItem('associatedSymptoms');
     if (savedAssoc) {
       try {
         setAssocAnswers(JSON.parse(savedAssoc));
-      } catch { }
+      } catch {}
     }
     const savedFunc = localStorage.getItem('functionalImpairment');
     if (savedFunc) {
       try {
         setFuncAnswers(JSON.parse(savedFunc));
-      } catch { }
+      } catch {}
     }
   }, []);
 
@@ -171,21 +229,25 @@ const CalculatorForm: React.FC = () => {
     localStorage.setItem('functionalImpairment', JSON.stringify(funcAnswers));
   }, [funcAnswers]);
 
+  // 5. סיום מדור I
   const finishOcd = (answers: SymptomGroup[]) => {
     setOcdAnswers(answers);
-    setSectionIndex(1); // עוברים למדור II
+    setSectionIndex(1);
   };
 
+  // 6. סיום מדור II
   const finishAssoc = (answers: SymptomGroup[]) => {
     setAssocAnswers(answers);
-    setSectionIndex(2); // עוברים למדור III
+    setSectionIndex(2);
   };
 
+  // 7. סיום מדור III (פגיעה תפקודית)
   const finishFunctional = (answers: SymptomGroup[]) => {
     setFuncAnswers(answers);
-    setSectionIndex(3); // עוברים לחישוב סופי
+    setSectionIndex(3);
   };
 
+  // 8. חישוב סופי
   const handleCalculate = () => {
     const formData: PansFormData = {
       ocdSymptoms: ocdAnswers,
@@ -197,8 +259,9 @@ const CalculatorForm: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
+    <Box sx={{ width: '100%', mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 2, maxWidth: 900, mx: 'auto' }}>
+        {/* ===== מדור I: שאלון OCD “שאלה אחר שאלה” ===== */}
         {sectionIndex === 0 && (
           <SurveySection
             title="I. תסמיני OCD"
@@ -207,6 +270,7 @@ const CalculatorForm: React.FC = () => {
           />
         )}
 
+        {/* ===== מדור II: שאלון תסמינים נלווים “שאלה אחר שאלה” ===== */}
         {sectionIndex === 1 && (
           <SurveySection
             title="II. תסמינים נלווים"
@@ -215,34 +279,38 @@ const CalculatorForm: React.FC = () => {
           />
         )}
 
+        {/* ===== מדור III: פגיעה תפקודית – טבלה אנכית ===== */}
         {sectionIndex === 2 && (
-          <FunctionalSection
-            items={funcAnswers}
-            onItemChange={(id, value) =>
-              setFuncAnswers([
-                {
-                  id,
-                  label: funcAnswers[0].label,
-                  rating: value as RatingValue,
-                },
-              ])
-            }
-          />
-        )}
-        {sectionIndex === 2 && (
-          <Box textAlign="center" sx={{ mt: 2 }}>
-            <Button variant="contained" color="primary" onClick={() => finishFunctional(funcAnswers)}>
-              סיים מדור III
-            </Button>
-          </Box>
+          <>
+            <FunctionalSection
+              items={funcAnswers}
+              onItemChange={(id, value: any) => {
+                setFuncAnswers([
+                  {
+                    id: funcAnswers[0].id,
+                    label: funcAnswers[0].label,
+                    ratingBefore: funcAnswers[0].ratingBefore,
+                    ratingAfter: funcAnswers[0].ratingAfter,
+                    ratingCurrent: value as RatingValue,
+                  },
+                ]);
+              }}
+            />
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Button variant="contained" onClick={() => finishFunctional(funcAnswers)}>
+                סיים מדור III
+              </Button>
+            </Box>
+          </>
         )}
 
+        {/* ===== שלב סופי: הצג כפתור חישוב סופי ===== */}
         {sectionIndex === 3 && (
-          <Box sx={{ textAlign: 'center', mt: 4 }}>
+          <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h6" gutterBottom>
               כל המדורים הושלמו!
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleCalculate}>
+            <Button variant="contained" size="large" onClick={handleCalculate}>
               חשב ניקוד סופי
             </Button>
           </Box>

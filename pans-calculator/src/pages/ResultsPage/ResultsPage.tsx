@@ -2,118 +2,231 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Container,
-    Paper,
     Typography,
-    Divider,
-    List,
-    ListItem,
-    ListItemText,
-    Box,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
     Button,
+    Box,
 } from '@mui/material';
-import { PansFormData, PansScores } from '../../types/pansTypes';
+import { PansFormData } from '../../types/pansTypes';
 
-interface LocationState {
+interface ResultsState {
     formData: PansFormData;
-    scores: PansScores;
+    scores: {
+        before: number;
+        after: number;
+        current: number;
+        total: number;
+    };
 }
 
 const ResultsPage: React.FC = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-
-    // וידוא שה־location.state קיים
-    const state = location.state as LocationState | null;
+    const location = useLocation();
+    const state = location.state as ResultsState | undefined;
 
     if (!state) {
-        // אם התחנו את הדף בלי להזין שדות, נחזיר את המשתמש לדף הראשי
-        navigate('/', { replace: true });
+        navigate('/');
         return null;
     }
 
     const { formData, scores } = state;
+    const { before, after, current, total } = scores;
+    const { ocdSymptoms, associatedSymptoms, functionalImpairment } = formData;
 
-    // נבנה מערך של כל הסימפטומים עם הדירוגים שלהם
-    // נרצה להציג: ראשית את OCD, אחר כך סימפטומים נלווים, ואז פגיעה תפקודית
+    /** חישוב סיכום שורה עבור OCD: ניקוד גבוה ביותר × 5 לכל טווח */
+    const maxOCD_before = Math.max(...ocdSymptoms.map((s) => s.ratingBefore));
+    const maxOCD_after = Math.max(...ocdSymptoms.map((s) => s.ratingAfter));
+    const maxOCD_current = Math.max(...ocdSymptoms.map((s) => s.ratingCurrent));
+    const scoreOCD_before = maxOCD_before * 5;
+    const scoreOCD_after = maxOCD_after * 5;
+    const scoreOCD_current = maxOCD_current * 5;
+    const totalOCD = scoreOCD_before + scoreOCD_after + scoreOCD_current;
+
+    /** חישוב סיכום תסמינים נלווים: סכום חמשת הערכים הגדולים ביותר בכל טווח */
+    const sumTop5 = (arr: number[]) =>
+        [...arr].sort((a, b) => b - a).slice(0, 5).reduce((sum, v) => sum + v, 0);
+
+    const assoc_beforeArr = associatedSymptoms.map((s) => s.ratingBefore);
+    const assoc_afterArr = associatedSymptoms.map((s) => s.ratingAfter);
+    const assoc_currentArr = associatedSymptoms.map((s) => s.ratingCurrent);
+
+    const scoreAssoc_before = sumTop5(assoc_beforeArr);
+    const scoreAssoc_after = sumTop5(assoc_afterArr);
+    const scoreAssoc_current = sumTop5(assoc_currentArr);
+    const totalAssoc = scoreAssoc_before + scoreAssoc_after + scoreAssoc_current;
+
+    /** חישוב פגיעה תפקודית: כל דירוג מוכפל ב־10 */
+    const func = functionalImpairment[0];
+    const func_before = func.ratingBefore * 10;
+    const func_after = func.ratingAfter * 10;
+    const func_current = func.ratingCurrent * 10;
+    const totalFunc = func_before + func_after + func_current;
+
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
-            <Typography variant="h5" gutterBottom>
+        <Container maxWidth="md" sx={{ py: 4, direction: 'rtl' }}>
+            <Typography variant="h4" gutterBottom align="center">
                 תוצאות מדד PANS/PANDAS
             </Typography>
 
-            <Box id="printable-area">
-                {/* הצגת ניקוד כולל */}
-                <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-                    <Typography variant="h6">ניקוד סופי: {scores.totalScore} מתוך 100</Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        ▪︎ OCD: {scores.ocdScore} מתוך 25
-                        <br />
-                        ▪︎ סימפטומים נלווים: {scores.associatedScore} מתוך 25
-                        <br />
-                        ▪︎ פגיעה תפקודית: {scores.functionalScore} מתוך 50
-                    </Typography>
-                </Paper>
+            <Table sx={{ mb: 3 }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold' }}>תחום / סימפטום</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            שבוע לפני הופעה ראשונה
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            שבוע אחרי הופעה ראשונה
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            7 ימים אחרונים
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            ניקוד שורה
+                        </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {/* ===== שורות OCD – כל סימפטום בנפרד ===== */}
+                    {ocdSymptoms.map((s) => {
+                        const row_before = s.ratingBefore * 5;
+                        const row_after = s.ratingAfter * 5;
+                        const row_current = s.ratingCurrent * 5;
+                        const row_total = row_before + row_after + row_current;
+                        return (
+                            <TableRow key={s.id}>
+                                <TableCell sx={{ textAlign: 'right' }}>{s.label}</TableCell>
+                                <TableCell align="center">{row_before}</TableCell>
+                                <TableCell align="center">{row_after}</TableCell>
+                                <TableCell align="center">{row_current}</TableCell>
+                                <TableCell align="center">{row_total}</TableCell>
+                            </TableRow>
+                        );
+                    })}
 
-                {/* פרטי כל הסימפטומים והדירוגים */}
-                <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
-                    <Typography variant="h6" gutterBottom>
-                        פירוט דירוגים:
-                    </Typography>
+                    {/* שורה: סכום OCD */}
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                            סך תסמיני OCD (0–25)
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreOCD_before}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreOCD_after}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreOCD_current}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {totalOCD}
+                        </TableCell>
+                    </TableRow>
 
-                    {/* OCD Section */}
-                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                        I. תסמיני OCD:
-                    </Typography>
-                    <List dense>
-                        {formData.ocdSymptoms.map((s) => (
-                            <ListItem key={s.id}>
-                                <ListItemText primary={`${s.label}: דירוג ${s.rating}`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider sx={{ my: 2 }} />
+                    {/* ===== שורות Associated – כל סימפטום בנפרד ===== */}
+                    {associatedSymptoms.map((s) => {
+                        const row_before = s.ratingBefore;
+                        const row_after = s.ratingAfter;
+                        const row_current = s.ratingCurrent;
+                        const row_sum = row_before + row_after + row_current;
+                        return (
+                            <TableRow key={s.id}>
+                                <TableCell sx={{ textAlign: 'right' }}>{s.label}</TableCell>
+                                <TableCell align="center">{row_before}</TableCell>
+                                <TableCell align="center">{row_after}</TableCell>
+                                <TableCell align="center">{row_current}</TableCell>
+                                <TableCell align="center">{row_sum}</TableCell>
+                            </TableRow>
+                        );
+                    })}
 
-                    {/* Associated Section */}
-                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                        II. תסמינים נלווים:
-                    </Typography>
-                    <List dense>
-                        {formData.associatedSymptoms.map((s) => (
-                            <ListItem key={s.id}>
-                                <ListItemText primary={`${s.label}: דירוג ${s.rating}`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider sx={{ my: 2 }} />
+                    {/* שורה: סכום Associated */}
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                            סך תסמינים נלווים (0–25)
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreAssoc_before}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreAssoc_after}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {scoreAssoc_current}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {totalAssoc}
+                        </TableCell>
+                    </TableRow>
 
-                    {/* Functional Section */}
-                    <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                        III. פגיעה תפקודית:
-                    </Typography>
-                    <List dense>
-                        {formData.functionalImpairment.map((s) => (
-                            <ListItem key={s.id}>
-                                <ListItemText primary={`${s.label}: דירוג ${s.rating}`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                </Paper>
-            </Box>
+                    {/* ===== שורות Functional – רק שורה אחת, כי זה פריט יחיד ===== */}
+                    <TableRow>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                            {func.label} (0–5)
+                        </TableCell>
+                        <TableCell align="center">{func_before}</TableCell>
+                        <TableCell align="center">{func_after}</TableCell>
+                        <TableCell align="center">{func_current}</TableCell>
+                        <TableCell align="center">{totalFunc}</TableCell>
+                    </TableRow>
 
-            {/* כפתור הדפסה */}
-            <Box textAlign="center" sx={{ mt: 2 }}>
-                <Button variant="outlined" onClick={() => window.print()}>
-                    הדפס / ייצא PDF
-                </Button>
-            </Box>
-            <Box textAlign="center" sx={{ mt: 2 }}>
-                <Button variant="outlined" onClick={() => {
-                    localStorage.removeItem('ocdSymptoms');
-                    localStorage.removeItem('associatedSymptoms');
-                    localStorage.removeItem('functionalImpairment');
-                    navigate('/');
-                }}>
-                    מדד חדש
+                    {/* שורה: סכום Functional */}
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                            סך פגיעה תפקודית (0–50)
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {func_before}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {func_after}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {func_current}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {totalFunc}
+                        </TableCell>
+                    </TableRow>
+
+                    {/* שורה: סיכום כולל של כל הטווחים */}
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                            סך הכול חלקי בכל טווח
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {before}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {after}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {current}
+                        </TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                            {total}
+                        </TableCell>
+                    </TableRow>
+
+                    {/* שורה: ציון כולל סופי (0–100) */}
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                            ציון כולל (0–100)
+                        </TableCell>
+                        <TableCell colSpan={4} align="center" sx={{ fontWeight: 'bold' }}>
+                            {total}
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+
+            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                <Button variant="contained" onClick={() => navigate('/')}>
+                    התחלה מחדש
                 </Button>
             </Box>
         </Container>

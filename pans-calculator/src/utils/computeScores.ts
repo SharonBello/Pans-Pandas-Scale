@@ -1,57 +1,67 @@
-import { PansFormData, PansScores, RatingValue } from "../types/pansTypes";
+import { PansFormData } from "../types/pansTypes";
 
-/**
- * מחשב את ניקוד OCD: מוציא את הערך המרבי (0–5) ומכפיל ב-5 => 0–25
- */
-function computeOCDScore(ocdSymptoms: { rating: RatingValue }[]): number {
-  const maxRating = Math.max(...ocdSymptoms.map((s) => s.rating));
-  return maxRating * 5;
-}
+export function computeScores(data: PansFormData): {
+  before: number;
+  after: number;
+  current: number;
+  total: number;
+} {
+  const { ocdSymptoms, associatedSymptoms, functionalImpairment } = data;
 
-/**
- * מחשב את ניקוד הסימפטומים הנלווים: לוקח את 5 הערכים הגבוהים ביותר (0–5) ומסכם => 0–25
- */
-function computeAssociatedScore(
-  associatedSymptoms: { rating: RatingValue }[]
-): number {
-  // מייצרים מערך של ערכי ה–rating (RatingValue[]) וממיינים בסדר יורד
-  const sortedRatings = associatedSymptoms
-    .map((s) => s.rating)
-    .sort((a, b) => b - a);
+  // ---- מדור I: OCD ----
+  // ניקוד OCD בכל טווח – ניקוד = max(ratingX) * 5
+  const maxOCD_before = Math.max(
+    ...ocdSymptoms.map((s) => s.ratingBefore as number)
+  );
+  const maxOCD_after = Math.max(
+    ...ocdSymptoms.map((s) => s.ratingAfter as number)
+  );
+  const maxOCD_current = Math.max(
+    ...ocdSymptoms.map((s) => s.ratingCurrent as number)
+  );
 
-  // חותכים את חמשת הערכים הגבוהים ביותר
-  const topFive = sortedRatings.slice(0, 5);
+  const scoreOCD_before = maxOCD_before * 5;
+  const scoreOCD_after = maxOCD_after * 5;
+  const scoreOCD_current = maxOCD_current * 5;
 
-  // כאן מגדירים מפורש שה–reduce מוחזר כ–number
-  const sumTopFive = topFive.reduce<number>((sum, val) => sum + val, 0);
+  // ---- מדור II: Associated ----
+  // ניקוד = סכום 5 הערכים הגבוהים ביותר מתוך 14 (בכל טווח)
+  function sumTop5(arr: number[]): number {
+    const sortedDesc = [...arr].sort((a, b) => b - a);
+    return sortedDesc.slice(0, 5).reduce((sum, v) => sum + v, 0);
+  }
 
-  return sumTopFive;
-}
+  const assoc_beforeArr = associatedSymptoms.map(
+    (s) => s.ratingBefore as number
+  );
+  const assoc_afterArr = associatedSymptoms.map((s) => s.ratingAfter as number);
+  const assoc_currentArr = associatedSymptoms.map(
+    (s) => s.ratingCurrent as number
+  );
 
-/**
- * מחשב את ניקוד הפגיעה התפקודית: מכפיל את הדירוג (0–5) ב-10 => 0–50
- */
-function computeFunctionalScore(
-  functionalSymptoms: { rating: RatingValue }[]
-): number {
-  if (functionalSymptoms.length === 0) return 0;
-  const rating = functionalSymptoms[0].rating;
-  return rating * 10;
-}
+  const scoreAssoc_before = sumTop5(assoc_beforeArr);
+  const scoreAssoc_after = sumTop5(assoc_afterArr);
+  const scoreAssoc_current = sumTop5(assoc_currentArr);
 
-/**
- * פונקציה מרכזית שמקבלת את כל הנתונים ומחזירה את כל הניקודים
- */
-export function computeScores(formData: PansFormData): PansScores {
-  const ocdScore = computeOCDScore(formData.ocdSymptoms);
-  const associatedScore = computeAssociatedScore(formData.associatedSymptoms);
-  const functionalScore = computeFunctionalScore(formData.functionalImpairment);
-  const totalScore = ocdScore + associatedScore + functionalScore;
+  // ---- מדור III: Functional ----
+  // ניקוד = ratingCurrent * 10 (אנחנו מניחים שאיננו ממנפים את before/after למדור הזה)
+  const func = functionalImpairment[0];
+  const scoreFunc_before = (func.ratingBefore as number) * 10;
+  const scoreFunc_after = (func.ratingAfter as number) * 10;
+  const scoreFunc_current = (func.ratingCurrent as number) * 10;
+
+  // ---- חישוב כללי לכל טווח ----
+  const before = scoreOCD_before + scoreAssoc_before + scoreFunc_before;
+  const after = scoreOCD_after + scoreAssoc_after + scoreFunc_after;
+  const current = scoreOCD_current + scoreAssoc_current + scoreFunc_current;
+
+  // ניקוד כולל
+  const total = before + after + current;
 
   return {
-    ocdScore,
-    associatedScore,
-    functionalScore,
-    totalScore,
+    before,
+    after,
+    current,
+    total,
   };
 }
