@@ -2,14 +2,15 @@ import React from 'react';
 import { Box, Typography, Slider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { RatingValue } from '../../types/pansTypes';
+import './SymptomRating.scss'
 
 const ratingDescriptions: Record<RatingValue, string> = {
   0: '0 – אין עדות לסימפטום; אין פעילות כלל.',
-  1: '1 – מינימלית (10): סימפטום ו/או התנהגות שמעט מזכירים את הסימפטום, מלווה בקושי קל בתחילת התופעה או התנהגות קלה שאינה מפריעה מהותית.',
-  2: '2 – קלה (20): סימפטום ו/או התנהגות בולטת יותר, אך עדיין לא מפריעה בתפקוד היומי; הקושי מורגש בלמידה או בלימוד.',
-  3: '3 – בינונית (30): סימפטום ו/או התנהגות משמעותית, גורמת לשינוי בתפקוד – קושי משמעותי בלימודים או בהתנהגות חברתית, נסיגה חלקית מפעילויות.',
-  4: '4 – חמורה (40): סימפטום ו/או התנהגות חמורים מאוד – אי יכולת לתפקד באופן רגיל, הימנעות מלאה מפעילויות, שינוי מהותי בהתנהגות החברתית.',
-  5: '5 – קיצונית (50): סימפטום ו/או התנהגות קיצונית – חוסר יכולת כמעט מוחלט לבצע פעולות יומיומיות, מצוקה קשה, צורך בסיוע צמוד בכל התחומים.',
+  1: '1 – מינימלית (10): סימפטום ו/או התנהגות שמעט מזכירים את הסימפטום…',
+  2: '2 – קלה (20): סימפטום ו/או התנהגות בולטת יותר…',
+  3: '3 – בינונית (30): סימפטום ו/או התנהגות משמעותית…',
+  4: '4 – חמורה (40): סימפטום ו/או התנהגות חמורים מאוד…',
+  5: '5 – קיצונית (50): סימפטום ו/או התנהגות קיצונית…',
 };
 
 interface SymptomRatingProps {
@@ -19,15 +20,16 @@ interface SymptomRatingProps {
   ratingAfter: RatingValue;
   ratingCurrent: RatingValue;
   onChange: (id: string, field: 'before' | 'after' | 'current', value: RatingValue) => void;
+  itemClass?: string;
 }
 
 const SymptomRating: React.FC<SymptomRatingProps> = ({
   id,
-  label,
   ratingBefore,
   ratingAfter,
   ratingCurrent,
   onChange,
+  itemClass = '',
 }) => {
   const marks = [
     { value: 0, label: '0' },
@@ -50,18 +52,10 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
 
   return (
     <Box sx={{ direction: 'rtl', mb: 2 }}>
-      {/* תווית הסימפטום */}
-      <Typography variant="subtitle1" sx={{ mb: 1, textAlign: 'right' }}>
-        {label}
-      </Typography>
-
       <Grid container spacing={2} alignItems="center">
-        {/* ====== טווח: שבוע לפני הופעה ראשונה ====== */}
-        <Grid>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }}
-          >
+        {/* ===== טווח: שבוע לפני הופעה ראשונה ===== */}
+        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
+          <Typography variant="subtitle2" sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }} >
             שבוע לפני הופעה ראשונה
           </Typography>
           <Slider
@@ -74,20 +68,14 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             valueLabelDisplay="off"
             aria-label={`${id}-before`}
           />
-          <Typography
-            variant="caption"
-            sx={{ mt: 0.5, display: 'block', textAlign: 'center' }}
-          >
+          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
             {ratingDescriptions[ratingBefore]}
           </Typography>
         </Grid>
 
-        {/* ====== טווח: שבוע אחרי הופעה ראשונה ====== */}
-        <Grid>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }}
-          >
+        {/* ===== טווח: שבוע אחרי הופעה ראשונה ===== */}
+        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
+          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
             שבוע אחרי הופעה ראשונה
           </Typography>
           <Slider
@@ -100,20 +88,14 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             valueLabelDisplay="off"
             aria-label={`${id}-after`}
           />
-          <Typography
-            variant="caption"
-            sx={{ mt: 0.5, display: 'block', textAlign: 'center' }}
-          >
+          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
             {ratingDescriptions[ratingAfter]}
           </Typography>
         </Grid>
 
-        {/* ====== טווח: 7 ימים אחרונים ====== */}
-        <Grid>
-          <Typography
-            variant="subtitle2"
-            sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }}
-          >
+        {/* ===== טווח: 7 ימים אחרונים ===== */}
+        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
+          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
             7 ימים אחרונים
           </Typography>
           <Slider
@@ -126,10 +108,7 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             valueLabelDisplay="off"
             aria-label={`${id}-current`}
           />
-          <Typography
-            variant="caption"
-            sx={{ mt: 0.5, display: 'block', textAlign: 'center' }}
-          >
+          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
             {ratingDescriptions[ratingCurrent]}
           </Typography>
         </Grid>

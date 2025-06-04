@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
-import SymptomRating from '../SymptomRating';
+import SymptomRating from '../SymptomRating/SymptomRating';
 
 interface OCDSectionProps {
     items: SymptomGroup[];

@@ -10,7 +10,7 @@ import {
   TableBody,
 } from '@mui/material';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
-import SymptomRating from '../SymptomRating';
+import SymptomRating from '../SymptomRating/SymptomRating';
 
 interface AssociatedSectionProps {
   items: SymptomGroup[];

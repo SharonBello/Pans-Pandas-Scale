@@ -1,19 +1,80 @@
+@import '../../styles/variables';
+
 .question-card {
   max-width: 800px;
   margin: 16px auto;
   border-radius: 12px;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+  background-color: $color-gray-light;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 
   .question-card__label {
-    font-size: 1.2rem;
-    line-height: 1.4;
-    margin-bottom: 12px;
-    text-align: right; /* יישור לימין כיוון RTL */
+    font-family: $font-header;
+    color: $color-blue-primary-dark;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    text-align: right; // RTL
   }
 
   .question-card__rating-container {
-    padding: 0 8px 16px 8px;
+    padding: 0 16px 24px 16px;
     direction: rtl;
+
+    // מחזור צבעים עבור כל עמודה:
+    // nth-of-type(3n+1) – רקע הכי בהיר
+    // nth-of-type(3n+2) – רקע קצת כהה יותר
+    // nth-of-type(3n+3) – רקע עוד קצת כהה יותר
+    .rating-grid-item:nth-of-type(3n + 1) {
+      background-color: $color-bg-cream;   // קרם בהיר (#FFFDEB)
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .rating-grid-item:nth-of-type(3n + 2) {
+      background-color: $color-bg-light;   // אפור-לבן עדין (#F7F7FC)
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .rating-grid-item:nth-of-type(3n + 3) {
+      background-color: $color-gray-medium;  // אפור בינוני בהיר (#E3E3E5)
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    // עיצוב של הסליידרים בתוכו עדיין לפי ה־Theme:
+    .MuiSlider-rail {
+      color: $color-gray-medium;
+      opacity: 1;
+    }
+
+    .MuiSlider-track {
+      color: $color-blue-accent;
+    }
+
+    .MuiSlider-thumb {
+      background-color: $color-blue-primary-dark;
+      border: 2px solid $color-blue-primary;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .MuiSlider-mark {
+      background-color: $color-blue-primary-light;
+    }
+
+    .MuiSlider-markLabel {
+      color: $color-dark-gray;
+      font-family: $font-body;
+      font-size: 0.85rem;
+    }
+
+    .MuiTypography-subtitle2 {
+      font-family: $font-body;
+      color: $color-dark-gray;
+    }
+
+    .MuiTypography-caption {
+      font-family: $font-body;
+      color: $color-gray;
+      font-size: 0.85rem;
+    }
   }
 
   @media (max-width: 600px) {
@@ -21,16 +82,40 @@
 
     .question-card__label {
       font-size: 1.1rem;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .question-card__rating-container {
+      padding: 0 8px 16px 8px;
+
+      .rating-grid-item {
+        padding: 8px; // מקטינים padding במובייל
+      }
+    }
+
+    .MuiTypography-caption {
+      font-size: 0.8rem;
     }
   }
 
   @media (min-width: 601px) and (max-width: 900px) {
-    margin: 16px 16px;
+    margin: 16px;
 
     .question-card__label {
-      font-size: 1.15rem;
-      margin-bottom: 10px;
+      font-size: 1.2rem;
+      margin-bottom: 14px;
+    }
+
+    .question-card__rating-container {
+      padding: 0 12px 20px 12px;
+
+      .rating-grid-item {
+        padding: 10px; // ביניים לטאבלט קטן
+      }
+    }
+
+    .MuiTypography-caption {
+      font-size: 0.83rem;
     }
   }
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import './QuestionCard.scss';
-import SymptomRating from '../SymptomRating';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
+import SymptomRating from '../SymptomRating/SymptomRating';
 
 interface QuestionCardProps {
   question: SymptomGroup;
@@ -14,17 +14,21 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, onAnswer }) => {
     <Card className="question-card">
       <CardContent>
         {/* תווית השאלה */}
-        <Typography className="question-card__label">{question.label}</Typography>
+        <Typography className="question-card__label">
+          {question.label}
+        </Typography>
 
-        {/* סימפטום־רייטינג = שלושה סליידרים עם תיאורים */}
+        {/* תיבת הרייטינג (שלושת הסלאידרים) */}
         <Box className="question-card__rating-container">
-          <SymptomRating 
+          {/* נוסיף props ל־SymptomRating שמציינים className ל־Grid item */}
+          <SymptomRating
             id={question.id}
-            label="" // label כבר מופיע בראש הכרטיס
+            label=""
             ratingBefore={question.ratingBefore}
             ratingAfter={question.ratingAfter}
             ratingCurrent={question.ratingCurrent}
             onChange={onAnswer}
+            itemClass="rating-grid-item" // נשלח מחלקת SCSS מותאמת
           />
         </Box>
       </CardContent>
