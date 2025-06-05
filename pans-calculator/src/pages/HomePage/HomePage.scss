@@ -2,10 +2,11 @@
 
 // שורש העמוד
 .homepage-root {
-  min-height: 100vh;
+  // min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: $color-bg-light;
+  flex: 1;
 }
 
 // Hero Section
@@ -19,6 +20,7 @@
   align-items: center;
   justify-content: center;
   color: $color-gray-light;
+  height: 100%;
 
   &::before {
     content: '';
@@ -106,7 +108,14 @@
   width: 90%;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba($color-gray, 0.2);
-  text-align: center;
+  // text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  .modal-title {
+    color: $color-dark-gray;
+    font-family: $font-header;
+  }
 
   .modal-text {
     font-family: $font-body;
@@ -120,6 +129,7 @@
     background-color: $color-blue-primary;
     color: $color-gray-light;
     font-family: $font-header;
+    align-self: center;
 
     &:hover {
       background-color: darken($color-blue-primary, 5%);

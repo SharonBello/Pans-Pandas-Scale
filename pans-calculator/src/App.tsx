@@ -6,15 +6,15 @@ import HomePage from './pages/HomePage/HomePage';
 import ScalePage from './pages/ScalePage/ScalePage';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import Footer from './components/Footer/Footer';
-
+import './App.scss'
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Box display="flex" flexDirection="column" minHeight="100vh" className='app-container'>
         <Header />
 
-        <Box component="main" flexGrow={1}>
+        <Box component="main" flexGrow={1} className='main-container'>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/scale" element={<ScalePage />} />

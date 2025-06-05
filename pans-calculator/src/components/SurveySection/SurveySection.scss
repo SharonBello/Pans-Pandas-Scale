@@ -1,0 +1,14 @@
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    padding-inline: 5%;
+    
+    .MuiBox-root {
+        padding-inline: 5%;
+        // max-width: 60% !important;
+        .MuiLinearProgress-root {
+            margin-bottom: 0;
+
+        }
+    }
+}

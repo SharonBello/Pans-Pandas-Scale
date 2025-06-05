@@ -10,9 +10,10 @@
   .question-card__label {
     font-family: $font-header;
     color: $color-blue-primary-dark;
-    font-size: 1.3rem;
+    font-size: 1rem;
     margin-bottom: 16px;
-    text-align: right; // RTL
+    text-align: right;
+    padding-inline: 40px;
   }
 
   .question-card__rating-container {

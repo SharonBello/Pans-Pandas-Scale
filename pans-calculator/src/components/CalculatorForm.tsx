@@ -3,7 +3,7 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import './sections/Sections.scss';
-import { PansFormData, RatingValue, SymptomGroup } from '../types/pansTypes';
+import { PansFormData, RatingValue, SubSymptom, SurveyItem, SymptomGroup } from '../types/pansTypes';
 import SurveySection from './SurveySection/SurveySection';
 import FunctionalSection from './sections/FunctionalSection';
 import { computeScores } from '../utils/computeScores';
@@ -16,7 +16,7 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_contamination',
       label:
-        'דאגות (חרדות) טורדניות ומתמשכות לגבי לכלוך וחיידקים, וכפייתיות רחצה קשורה.',
+        'דאגות טורדניות ומתמשכות בנוגע ללכלוך וחיידקים. כפייתיות של רחיצה וניקיון.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -24,7 +24,7 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_harm',
       label:
-        'דאגות (חרדות) טורדניות ומתמשכות לגבי פגיעה בעצמי או בזולת, וכפייתיות קשורה; צורך להיזהר מפגיעה או לספר/להתוודות.',
+        'דאגות טורדניות ומתמשכות בנוגע לפגיעה בעצמי או באחרים. כפייתיות שקשורה בזה; כולל צורך להתוודות או לספר. עשוי להיות קשור גם לחששות מפרידה.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -32,7 +32,7 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_sex_religion',
       label:
-        'דאגות (חרדות) טורדניות ומתמשכות לגבי מחשבות או התנהגויות מיניות או דתיות, וטקסים כפייתיים קשורים.',
+        'דאגות טורדניות ומתמשכות בנוגע למחשבות או התנהגויות בעלות אופי מיני או דתי. טקסים והתנהגויות כפייתיות קשורות.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -40,14 +40,15 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_symmetry',
       label:
-        'דאגות טורדניות לגבי סימטריה וכפייתיות קשורה: סידור, ספירה או ארגון; צורך לגעת, להקיש או לשפשף; או צורך שדברים ירגישו/ייראו/יישמעו בדיוק נכון.',
+        'דאגות טורדניות בנוגע לסימטריה. כפייתיות של סידור, ספירה או ארגון; צורך לגעת, להקיש או לשפשף; או צורך שדברים ירגישו, ייראו או יישמעו "בדיוק נכון".',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'ocd_hoarding',
-      label: 'דאגות (חרדות) טורדניות ומתמשכות לגבי איסוף ואגירה.',
+      label:
+        'דאגות טורדניות ומתמשכות בנוגע לאגירה ואיסוף חפצים.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -55,7 +56,7 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_eating',
       label:
-        'תסמיני צריכת מזון מגבילה ו/או נמנעת; הפרעת אכילה או האכלה (לרבות, חוסר עניין באכילה או במזון; הימנעות מבוססת על תחושות; דאגה לגבי השלכות) המובילה לסירוב לאכול (אנורקסיה לא טיפוסית).',
+        'תסמינים של הימנעות או הגבלה באכילה: חוסר עניין ניכר באוכל, רגישות חושית למרקם/טעם/ריח, או פחד מהשלכות של אכילה – מה שעלול להוביל לסירוב לאכול (אנורקסיה לא טיפוסית) או לירידה חדה בצריכת המזון.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -63,114 +64,194 @@ const CalculatorForm: React.FC = () => {
     {
       id: 'ocd_misc',
       label:
-        'שונות: צורך לדעת או לזכור; פחד מלומר/לא לומר דברים מסוימים; דימויים חודרניים; קולות חודרניים; צורך בטקסים חוזרים; צורך להכין רשימות; או אחרים (פרטו).',
+        'שונות: צורך לדעת או לזכור דברים; פחד לומר או לא לומר משהו מסוים; דימויים חודרניים (לא אלימים); מילים, קולות, מספרים או מוזיקה שחוזרים בראש; חזרתיות בפעולות כמו כניסה ויציאה מדלת; צורך לערב אדם אחר בטקסים (למשל לשאול שוב ושוב); טקסים מנטליים שאינם בדיקה או ספירה; רישום רשימות מופרז; או תסמינים אחרים.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
   ];
 
-  const associatedInitial: SymptomGroup[] = [
+  const associatedInitial: SubSymptom[] = [
     {
       id: 'assoc_separation',
-      label: 'חרדת נטישה – צורך לשמור על קרבה לאדם, למקום מוכר או לחפץ.',
+      domain: 'anxiety',
+      sublabel: 'חרדת פרידה – צורך לשמור על קרבה לאדם מסוים, מקום מוכר כמו בית או חדר או חפץ.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_general_anxiety',
-      label: 'חרדה כללית.',
+      domain: 'anxiety',
+      sublabel: 'חרדה כללית.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_phobias',
-      label: 'פחדים ו/או פוביות לא רציונליים וחסרי בסיס.',
+      domain: 'anxiety',
+      sublabel: 'פחדים לא רציונליים ו/או פוביות ללא בסיס ממשי.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_panic',
-      label: 'התקפי פאניקה.',
+      domain: 'anxiety',
+      sublabel: 'התקפי פאניקה.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_mood_changes',
-      label:
-        'קשיי ויסות רגשי, דיכאון – תנודות קיצוניות במצב הרוח, ודיכאון עם או בלי מחשבות אובדניות.',
+      domain: 'moodiness',
+      sublabel: 'תנודתיות רגשית ודיכאון – שינויים חדים במצב הרוח.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_depression',
+      domain: 'moodiness',
+      sublabel: 'דיכאון עם או בלי מחשבות אובדניות או התנהגות של פגיעה עצמית.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_irritability',
-      label:
-        'רגזנות מוגברת או תוקפנות – דרישות מתריסות, התקפי זעם או התפרצויות.',
+      domain: 'irritability',
+      sublabel: 'רגזנות או תוקפנות – דרישות לא הגיוניות, התפרצויות כעס, התקפי זעם או התנהגות תגובתית אגרסיבית.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
-      id: 'assoc_withdrawal',
-      label:
-        'נסיגה התנהגותית (“דיבור תינוקי”, שינוי באישיות); חוסר רצון לאינטראקציה.',
+      id: 'assoc_withdrawal1',
+      domain: 'regression',
+      sublabel: 'נסיגה התנהגותית – “דיבור תינוקי” או התנהגות לא תואמת גיל.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
-      id: 'assoc_school_function',
-      label:
-        'תפקוד בבית ספר, ריכוז/למידה – קשיים בקשב או בלמידה; בלבול; אובדן מיומנויות אקדמיות.',
+      id: 'assoc_withdrawal2',
+      domain: 'regression',
+      sublabel: 'שינוי באישיות.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_school_function1',
+      domain: 'cognitive',
+      sublabel: 'תפקוד לימודי וריכוז – קושי להתרכז, בעיות בזיכרון קצר טווח.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_school_function2',
+      domain: 'cognitive',
+      sublabel: 'אובדן כישורים אקדמיים (במיוחד בחשבון, קריאה או כתיבה).',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_school_function3',
+      domain: 'cognitive',
+      sublabel: 'בלבול.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_sensory',
-      label:
-        'תסמינים תחושתיים – רגישות לאור, טעם, ריח או מרקם; צורך לגעת בחפצים באופן ספציפי.',
+      domain: 'sensory',
+      sublabel: 'תסמינים חושיים – רגישות לאור, מגע (כמו תגיות), צלילים, ריחות או טעמים; צורך לגעת בדברים בצורה מסוימת; עיוותים בתפיסה חזותית או מרחבית.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_hallucinations',
-      label: 'הזיות ראייה או שמיעה.',
+      domain: 'hallucinations',
+      sublabel: 'הזיות – ראייה או שמיעה של דברים שאינם קיימים.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
-      id: 'assoc_motor',
-      label: 'תסמינים מוטוריים – דיסגרפיה, תנועות חריגות, טיקים מוטוריים או קוליים.',
+      id: 'assoc_motor1',
+      domain: 'motor',
+      sublabel: 'דיסגרפיה - ירידה או אובדן היכולת לצייר, להעתיק צוורת/דמויות, או לכתוב אותיות ומילים.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_motor2',
+      domain: 'motor',
+      sublabel: 'היפראקטיביות מוטורית או תנועות פתאומיות - בעיטות, יריקות, גפיים מתנופפות, הסתובבות, הליכה הלוך ושוב. אי יכולת להישאר בשקט מבחינה גופנית.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_motor3',
+      domain: 'motor',
+      sublabel: 'תנועות אצבעות כמו נגינה בפסנתר.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_motor4',
+      domain: 'motor',
+      sublabel: 'טיקים מוטוריים או קוליים פשוטים - נהמות, נחירות, צפצופים, חריקות וכו.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_motor5',
+      domain: 'motor',
+      sublabel: 'טיקים מוטוריים או קוליים מורכבים - יריקות, קללות, מילים או תנועות מגונות, חזרתיות על מילים, שינויים בטון הקול או בקצב הדיבור וכו.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_urinary',
-      label: 'תסמינים במערכת השתן – תכיפות או דחיפות בשתן, חוסר יכולת לתת שתן.',
+      domain: 'urinary',
+      sublabel: 'תסמינים במערכת השתן – תכיפות, דחיפות או קושי לתת שתן (ביום או בלילה).',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
-      id: 'assoc_sleep',
-      label:
-        'הפרעות שינה, עייפות – נדודי שינה, ישנוניות יתר, סיוטים או תשישות קיצונית.',
+      id: 'assoc_sleep2',
+      domain: 'sleep',
+      sublabel: 'נדודי שינה או ישנוניות יתר. הפרעות שינה ועייפות – קושי להירדם, שינה מרובה, סיוטים, טקסים ארוכים לפני השינה.',
+      ratingBefore: 0 as RatingValue,
+      ratingAfter: 0 as RatingValue,
+      ratingCurrent: 0 as RatingValue,
+    },
+    {
+      id: 'assoc_sleep1',
+      domain: 'sleep',
+      sublabel: 'עייפות קיצונית.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
     },
     {
       id: 'assoc_pupil',
-      label: 'אישונים מורחבים – “מבט מבועת”.',
+      domain: 'pupil',
+      sublabel: 'אישונים מורחבים – מראה של “פחד קיצוני” או “מבט מבועת”.',
       ratingBefore: 0 as RatingValue,
       ratingAfter: 0 as RatingValue,
       ratingCurrent: 0 as RatingValue,
@@ -189,7 +270,10 @@ const CalculatorForm: React.FC = () => {
 
   // 2. סטייט לכל מדור
   const [ocdAnswers, setOcdAnswers] = useState<SymptomGroup[]>([...ocdInitial]);
-  const [assocAnswers, setAssocAnswers] = useState<SymptomGroup[]>([...associatedInitial]);
+
+  // שימו לב: נהפוך את assocAnswers ל־SubSymptom[]
+  const [assocAnswers, setAssocAnswers] = useState<SubSymptom[]>([...associatedInitial]);
+
   const [funcAnswers, setFuncAnswers] = useState<SymptomGroup[]>([...functionalInitial]);
 
   // 3. ניהול תצוגה: 0 = OCD, 1 = Associated, 2 = Functional, 3 = חישוב סופי
@@ -201,19 +285,19 @@ const CalculatorForm: React.FC = () => {
     if (savedOCD) {
       try {
         setOcdAnswers(JSON.parse(savedOCD));
-      } catch {}
+      } catch { }
     }
     const savedAssoc = localStorage.getItem('associatedSymptoms');
     if (savedAssoc) {
       try {
         setAssocAnswers(JSON.parse(savedAssoc));
-      } catch {}
+      } catch { }
     }
     const savedFunc = localStorage.getItem('functionalImpairment');
     if (savedFunc) {
       try {
         setFuncAnswers(JSON.parse(savedFunc));
-      } catch {}
+      } catch { }
     }
   }, []);
 
@@ -229,19 +313,21 @@ const CalculatorForm: React.FC = () => {
     localStorage.setItem('functionalImpairment', JSON.stringify(funcAnswers));
   }, [funcAnswers]);
 
-  // 5. סיום מדור I
-  const finishOcd = (answers: SymptomGroup[]) => {
-    setOcdAnswers(answers);
+  // 5. סיום מדור I (now receives SurveyItem[])
+  const finishOcd = (answers: SurveyItem[]) => {
+    // cast back to SymptomGroup[]
+    setOcdAnswers(answers as SymptomGroup[]);
     setSectionIndex(1);
   };
 
-  // 6. סיום מדור II
-  const finishAssoc = (answers: SymptomGroup[]) => {
-    setAssocAnswers(answers);
+  // 6. סיום מדור II (now receives SurveyItem[])
+  const finishAssoc = (answers: SurveyItem[]) => {
+    // cast back to SubSymptom[]
+    setAssocAnswers(answers as SubSymptom[]);
     setSectionIndex(2);
   };
 
-  // 7. סיום מדור III (פגיעה תפקודית)
+  // 7. סיום מדור III (פגיעה תפקודית, remains SymptomGroup[])
   const finishFunctional = (answers: SymptomGroup[]) => {
     setFuncAnswers(answers);
     setSectionIndex(3);
@@ -270,10 +356,10 @@ const CalculatorForm: React.FC = () => {
           />
         )}
 
-        {/* ===== מדור II: שאלון תסמינים נלווים “שאלה אחר שאלה” ===== */}
+        {/* ===== מדור II: תתי־הסימפטומים (“NP”) ===== */}
         {sectionIndex === 1 && (
           <SurveySection
-            title="II. תסמינים נלווים"
+            title="II. תסמינים נוירו-פסיכיאטריים נלווים"
             items={assocAnswers}
             onComplete={finishAssoc}
           />
@@ -284,14 +370,14 @@ const CalculatorForm: React.FC = () => {
           <>
             <FunctionalSection
               items={funcAnswers}
-              onItemChange={(id, value: any) => {
+              onItemChange={(id, value: RatingValue) => {
                 setFuncAnswers([
                   {
                     id: funcAnswers[0].id,
                     label: funcAnswers[0].label,
                     ratingBefore: funcAnswers[0].ratingBefore,
                     ratingAfter: funcAnswers[0].ratingAfter,
-                    ratingCurrent: value as RatingValue,
+                    ratingCurrent: value, // value כבר RatingValue
                   },
                 ]);
               }}
@@ -304,7 +390,7 @@ const CalculatorForm: React.FC = () => {
           </>
         )}
 
-        {/* ===== שלב סופי: הצג כפתור חישוב סופי ===== */}
+        {/* ===== שלב סופי: כפתור חישוב סופי ===== */}
         {sectionIndex === 3 && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h6" gutterBottom>

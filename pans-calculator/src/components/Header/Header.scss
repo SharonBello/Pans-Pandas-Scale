@@ -4,6 +4,7 @@
   background-color: $color-blue-primary !important;
   color: $color-gray-light;
   box-shadow: none;
+  text-align: center;
 }
 
 .header-toolbar {
@@ -17,6 +18,7 @@
 .header-left {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .header-logo-button {
@@ -34,10 +36,11 @@
   font-size: 1.5rem;
   color: $color-gray-light;
   margin: 0;
+  width: 100%;
 }
 
 .header-right {
-  display: flex;
+  display: none !important;
   align-items: center;
   gap: 1rem;
 }

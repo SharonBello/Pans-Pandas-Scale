@@ -1,0 +1,24 @@
+.footer-container {
+    display: flex;
+    justify-content: space-between !important;
+    gap: 2vw;
+    align-items: center;
+    padding-inline: 5%;
+    padding-block: 10px;
+
+    .scale-info-origin {
+        max-width: 30%;
+        font-family: unset !important;
+        font-weight: unset !important;
+        font-size: 1rem;
+        line-height: unset !important;
+        letter-spacing: unset !important;
+    }
+
+    .footer-contact-rights-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5vh;
+        direction: ltr;
+    }
+}

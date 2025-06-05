@@ -7,7 +7,7 @@ const ScalePage: React.FC = () => {
   return (
     <Container maxWidth="md" className="scale-root">
       <Typography variant="h4" align="center" gutterBottom className="scale-title">
-        מדד PANS/PANDAS
+        מדד פאנס/פאנדס
       </Typography>
       <Typography variant="body1" align="center" className="scale-explanation" gutterBottom>
         סמנו דירוג (0–5) עבור כל שדה, ולחצו “חשב ניקוד” בסוף.

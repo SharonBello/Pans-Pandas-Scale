@@ -1,180 +1,243 @@
+// src/pages/ResultsPage/ResultsPage.tsx
+
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-    Container,
-    Typography,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Button,
-    Box,
+  Container,
+  Typography,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Button,
+  Box,
 } from '@mui/material';
-import { PansFormData } from '../../types/pansTypes';
+import {
+  PansFormData,
+  SubSymptom,
+  SymptomGroup,
+  NPDomainKey,
+  NP_DOMAIN_LABELS,
+} from '../../types/pansTypes';
+import './ResultsPage.scss';
 
 interface ResultsState {
-    formData: PansFormData;
-    scores: {
-        before: number;
-        after: number;
-        current: number;
-        total: number;
-    };
+  formData: PansFormData;
 }
 
+// פונקציה עזר לחישוב סכום ה־5 התחומים החמורים ביותר מתוך מערך מספרים
+const sumTop5 = (arr: number[]) =>
+  [...arr].sort((a, b) => b - a).slice(0, 5).reduce((sum, v) => sum + v, 0);
+
 const ResultsPage: React.FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const state = location.state as ResultsState | undefined;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as ResultsState | undefined;
 
-    if (!state) {
-        navigate('/');
-        return null;
-    }
+  if (!state) {
+    navigate('/');
+    return null;
+  }
 
-    const { formData, scores } = state;
-    const { current, total } = scores;
-    const { ocdSymptoms, associatedSymptoms, functionalImpairment } = formData;
+  const { formData } = state;
+  const { ocdSymptoms, associatedSymptoms, functionalImpairment } = formData;
 
-    /** חישוב סיכום שורה עבור OCD: ניקוד גבוה ביותר × 5 לכל טווח */
-    // פונקציה לחישוב חמשת הערכים הגבוהים ביותר (כדי לחשב “Associated”)
-    const sumTop5 = (arr: number[]) =>
-        [...arr].sort((a, b) => b - a).slice(0, 5).reduce((sum, v) => sum + v, 0);
+  // ===== 1. חישובי OCD לכל טווח =====
+  const maxOCD_before = Math.max(...ocdSymptoms.map((s) => s.ratingBefore));
+  const maxOCD_after = Math.max(...ocdSymptoms.map((s) => s.ratingAfter));
+  const maxOCD_current = Math.max(...ocdSymptoms.map((s) => s.ratingCurrent));
 
-    // ===== חישובי OCD (הכול לא משתנה) =====
-    const maxOCD_current = Math.max(...ocdSymptoms.map((s) => s.ratingCurrent));
-    const scoreOCD_current = maxOCD_current * 5;
+  const scoreOCD_before = maxOCD_before * 5;
+  const scoreOCD_after = maxOCD_after * 5;
+  const scoreOCD_current = maxOCD_current * 5;
 
-    // ===== חישובי Associated =====
-    const assoc_currentArr = associatedSymptoms.map((s) => s.ratingCurrent);
-    const scoreAssoc_current = sumTop5(assoc_currentArr);
+  // ===== 2. חישובי NP domains מתוך SubSymptom =====
+  // כל מפתחות התחומים
+  const allDomains: NPDomainKey[] = [
+    'anxiety',
+    'moodiness',
+    'irritability',
+    'cognitive',
+    'regression',
+    'sensory',
+    'hallucinations',
+    'motor',
+    'urinary',
+    'sleep',
+    'pupil',
+  ];
 
-    // ===== חישובי Functional =====
-    const func = functionalImpairment[0];
-    const func_current = func.ratingCurrent * 10;
+  // מושכים את הדירוג המקסימלי לכל תחום ולכל טווח
+  const domainRatingsBefore: Record<NPDomainKey, number> = {} as any;
+  const domainRatingsAfter: Record<NPDomainKey, number> = {} as any;
+  const domainRatingsCurrent: Record<NPDomainKey, number> = {} as any;
 
-    return (
-        <Container maxWidth="md" sx={{ py: 4, direction: 'rtl' }}>
-            <Typography variant="h4" gutterBottom align="center">
-                תוצאות מדד PANS/PANDAS
-            </Typography>
+  allDomains.forEach((domainKey) => {
+    const subs = associatedSymptoms.filter((s) => s.domain === domainKey);
+    domainRatingsBefore[domainKey] =
+      subs.length > 0 ? Math.max(...subs.map((s) => s.ratingBefore)) : 0;
+    domainRatingsAfter[domainKey] =
+      subs.length > 0 ? Math.max(...subs.map((s) => s.ratingAfter)) : 0;
+    domainRatingsCurrent[domainKey] =
+      subs.length > 0 ? Math.max(...subs.map((s) => s.ratingCurrent)) : 0;
+  });
 
-            <Table className="results-table" sx={{ mb: 3 }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold' }}>תחום / סימפטום</TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            7 ימים אחרונים
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            ניקוד שורה
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
+  const scoreAssoc_before = sumTop5(Object.values(domainRatingsBefore));
+  const scoreAssoc_after = sumTop5(Object.values(domainRatingsAfter));
+  const scoreAssoc_current = sumTop5(Object.values(domainRatingsCurrent));
 
-                <TableBody>
-                    {/* ===== OCD – כל סימפטום ובחירה “7 ימים” ===== */}
-                    {ocdSymptoms.map((s) => {
-                        const row_current = s.ratingCurrent * 5;
-                        return (
-                            <TableRow key={s.id}>
-                                <TableCell sx={{ textAlign: 'right' }}>{s.label}</TableCell>
-                                <TableCell align="center">{s.ratingCurrent}</TableCell>
-                                <TableCell align="center">{row_current}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-                    {/* שורה: סיכום OCD 7 ימים (max × 5) */}
-                    <TableRow className="results-table__summary-ocd">
-                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-                            סך תסמיני OCD (7 ימים ×5)
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {maxOCD_current}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {scoreOCD_current}
-                        </TableCell>
-                    </TableRow>
+  // ===== 3. חישובי פגיעה תפקודית לכל טווח =====
+  const func = functionalImpairment[0];
+  const func_before = func.ratingBefore * 10;
+  const func_after = func.ratingAfter * 10;
+  const func_current = func.ratingCurrent * 10;
 
-                    {/* ===== Associated – כל סימפטום ובחירה “7 ימים” ===== */}
-                    {associatedSymptoms.map((s) => {
-                        const row_current = s.ratingCurrent;
-                        return (
-                            <TableRow key={s.id}>
-                                <TableCell sx={{ textAlign: 'right' }}>{s.label}</TableCell>
-                                <TableCell align="center">{s.ratingCurrent}</TableCell>
-                                <TableCell align="center">{row_current}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-                    {/* שורה: סיכום Associated (סכום חמשת הגבוהים ב“7 ימים”) */}
-                    <TableRow className="results-table__summary-associated">
-                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-                            סך תסמינים נלווים (7 ימים – חמשת הגבוהים)
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {/* כאן נרצה להציג אולי את חמשת הגבוהים עצמם? בכל אופן נמקם placeholder */}
-                            {scoreAssoc_current > 0 ? '–' : '–'}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {scoreAssoc_current}
-                        </TableCell>
-                    </TableRow>
+  // ===== 4. TOTAL SYMPTOMS (OCD + Associated) לכל טווח =====
+  const totalSymp_before = scoreOCD_before + scoreAssoc_before;
+  const totalSymp_after = scoreOCD_after + scoreAssoc_after;
+  const totalSymp_current = scoreOCD_current + scoreAssoc_current;
 
-                    {/* ===== Functional – פריט יחיד הבא “7 ימים” ===== */}
-                    <TableRow>
-                        <TableCell sx={{ textAlign: 'right' }}>{func.label} (7 ימים)</TableCell>
-                        <TableCell align="center">{func.ratingCurrent}</TableCell>
-                        <TableCell align="center">{func_current}</TableCell>
-                    </TableRow>
-                    {/* שורה: סיכום Functional (7 ימים ×10) */}
-                    <TableRow className="results-table__summary-functional">
-                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-                            סך פגיעה תפקודית (7 ימים ×10)
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {func.ratingCurrent}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {func_current}
-                        </TableCell>
-                    </TableRow>
+  // ===== 5. TOTAL SCORE (TOTAL SYMPTOMS + Functional) לכל טווח =====
+  const totalScore_before = totalSymp_before + func_before;
+  const totalScore_after = totalSymp_after + func_after;
+  const totalScore_current = totalSymp_current + func_current;
 
-                    {/* ===== שורה סיכום כולל (רק “7 ימים”) ===== */}
-                    <TableRow className="results-table__summary-total">
-                        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
-                            ציון כולל (7 ימים בלבד)
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {/* מציג את סך החלק “7 ימים” שהועבר ב־scores.current */}
-                            {current}
-                        </TableCell>
-                        <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-                            {current}
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+  return (
+    <Container maxWidth="lg" sx={{ py: 4, direction: 'rtl' }} className='results-container'>
+      <Typography variant="h4" gutterBottom align="center">
+        תוצאות מדד פאנס/פאנדס
+      </Typography>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-                {/* לחצן חזרה */}
-                <Button variant="outlined" color="primary" onClick={() => navigate('/')}>
-                    חזרה להתחלה
-                </Button>
+      <Table className="results-table printable-area" sx={{ mb: 4 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
+              תחום / סימפטום
+            </TableCell>
+            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
+              שבוע לפני הופעה ראשונה
+            </TableCell>
+            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
+              שבוע אחרי הופעה ראשונה
+            </TableCell>
+            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
+              7 ימים אחרונים
+            </TableCell>
+          </TableRow>
+        </TableHead>
 
-                {/* לחצן הדפסה */}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => window.print()}
-                >
-                    הדפס תוצאות
-                </Button>
-            </Box>
-        </Container>
-    );
+        <TableBody>
+          {/** ===== שורה 1: OCD (סיכום) ===== */}
+          <TableRow className='worst-ocd-symptoms'>
+            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+              תסמיני OCD (0–25) <br />
+              (5 × החמור ביותר של תסמיני ה-OCD)
+            </TableCell>
+            <TableCell align="center">{scoreOCD_before}</TableCell>
+            <TableCell align="center">{scoreOCD_after}</TableCell>
+            <TableCell align="center">{scoreOCD_current}</TableCell>
+          </TableRow>
+
+          {/** ===== שורה 2: NP (כותרת ראשית) ===== */}
+          <TableRow>
+            <TableCell colSpan={4} sx={{ fontWeight: 'bold', fontSize: '0.95rem', textAlign: 'right' }} >
+              תסמינים נוירו-פסיכיאטריים נלווים (0–25) <br />
+              (סכום חמשת התחומים החמורים מתוך 7 תחומי ה-NP)
+            </TableCell>
+          </TableRow>
+
+          {/** ===== שורות 3–13: כל אחד מ־11 התחומים הראשיים ושיעורו בכל טווח ===== */}
+          {allDomains.map((domainKey) => {
+            const labelHeb = NP_DOMAIN_LABELS[domainKey];
+            const rb = domainRatingsBefore[domainKey];
+            const ra = domainRatingsAfter[domainKey];
+            const rc = domainRatingsCurrent[domainKey];
+
+            return (
+              <TableRow key={domainKey} className='domain-container'>
+                <TableCell sx={{ textAlign: 'right' }}>{labelHeb}</TableCell>
+                <TableCell align="center">{rb}</TableCell>
+                <TableCell align="center">{ra}</TableCell>
+                <TableCell align="center">{rc}</TableCell>
+              </TableRow>
+            );
+          })}
+
+          {/** ===== שורת סיכום NP: סכום 5 התחומים החמורים ביותר ===== */}
+          <TableRow className="results-table__summary-associated">
+            <TableCell sx={{ textAlign: 'right' }}>
+              סך תסמינים NP (חמשת התחומים החמורים ביותר)
+            </TableCell>
+            <TableCell align="center">
+              {scoreAssoc_before}
+            </TableCell>
+            <TableCell align="center">
+              {scoreAssoc_after}
+            </TableCell>
+            <TableCell align="center">
+              {scoreAssoc_current}
+            </TableCell>
+          </TableRow>
+
+          <TableRow className="results-table__summary-totalsymptoms">
+            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+              סך כל הסימפטומים (0–50)
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalSymp_before}
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalSymp_after}
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalSymp_current}
+            </TableCell>
+          </TableRow>
+
+          <TableRow>
+            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+              פגיעה תפקודית (0–50)
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_before}</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_after}</TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_current}</TableCell>
+          </TableRow>
+
+          <TableRow className="results-table__summary-totalscore">
+            <TableCell
+              sx={{
+                backgroundColor: '#E3E3E5',
+                fontWeight: 'bold',
+                fontSize: '0.95rem',
+                textAlign: 'right',
+              }}>
+              מדד פאנס/פאנדס (0–100)
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalScore_before}
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalScore_after}
+            </TableCell>
+            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+              {totalScore_current}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+
+      {/** ===== לחצני פעולה ===== */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+        <Button variant="outlined" onClick={() => navigate('/')} className='return-to-start-btn'>
+          חזרה להתחלה
+        </Button>
+        <Button variant="contained" onClick={() => window.print()} className='print-results-btn'>
+          הדפס תוצאות
+        </Button>
+      </Box>
+    </Container>
+  );
 };
 
 export default ResultsPage;

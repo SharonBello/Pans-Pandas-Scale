@@ -10,16 +10,16 @@ const Header: React.FC = () => {
     <AppBar position="static" className="header-container">
       <Toolbar className="header-toolbar">
         {/* לוגו בצד שמאל (לא חובה, אך אם תרצו להחזירו, הסירו את ההערה) */}
-        <Box className="header-left">
-          {/*
+        {/* <Box className="header-left"> */}
+        {/*
           <IconButton edge="start" color="inherit" aria-label="logo" className="header-logo-button">
             <Logo className="header-logo" width={32} height={32} />
           </IconButton>
           */}
-          <Typography variant="h6" component="div" className="header-title">
-            מדד פאנס/פאנדס
-          </Typography>
-        </Box>
+        <Typography variant="h6" component="div" className="header-title">
+          מדד פאנס/פאנדס
+        </Typography>
+        {/* </Box> */}
 
         {/* אם תרצו ליישר אלמנטים בצד ימין (כגון כפתורי תפריט), ניתן להוסיף אותם כאן */}
         <Box className="header-right">
