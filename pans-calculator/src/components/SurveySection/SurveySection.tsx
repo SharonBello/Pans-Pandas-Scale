@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import {
-    Box,
-    Typography,
-    Button,
-    LinearProgress,
-} from '@mui/material';
-import { RatingValue, SymptomGroup, SubSymptom } from '../../types/pansTypes';
+import { Box, Typography, Button, LinearProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { RatingValue, SubSymptom, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
 
 type SurveyItem = SymptomGroup | SubSymptom;
@@ -17,6 +13,7 @@ interface SurveySectionProps {
 }
 
 const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete }) => {
+    const { t } = useTranslation();
     const [answers, setAnswers] = useState<SurveyItem[]>([...items]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [mode, setMode] = useState<'survey' | 'review'>('survey');
@@ -62,15 +59,15 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
     };
 
     return (
-        <Box sx={{ mb: 4, direction: 'rtl' }}>
+        <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-                {title}
+                {t(title)}
             </Typography>
 
             {mode === 'survey' ? (
                 <Box>
                     <Typography variant="body2" color="textSecondary" align="left" sx={{ mb: 1 }}>
-                        {`שאלה ${currentIndex + 1} מתוך ${total}`}
+                        {t('common.questionOf', { current: currentIndex + 1, total })}
                     </Typography>
                     <LinearProgress
                         variant="determinate"
@@ -80,9 +77,11 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
 
                     <Box sx={{ mb: 2 }}>
                         <Typography variant="subtitle1" sx={{ mb: 1, textAlign: 'right' }}>
-                            {/* כאן נציג label (OCD) או sublabel (SubSymptom) */}
-                            {(answers[currentIndex] as SymptomGroup).label ||
-                                (answers[currentIndex] as SubSymptom).sublabel}
+                            {
+                                ('label' in answers[currentIndex])
+                                    ? t(`questions.${answers[currentIndex].id}.label`)
+                                    : t(`associated.${answers[currentIndex].id}.label`)
+                            }
                         </Typography>
                         <SymptomRating
                             id={answers[currentIndex].id}
@@ -98,27 +97,22 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button
-                            variant="text"
-                            disabled={currentIndex === 0}
-                            onClick={goBack}
-                        >
-                            חזור
+                        <Button variant="text" disabled={currentIndex === 0} onClick={goBack}>
+                            {t('common.back')}
                         </Button>
                         <Button variant="contained" onClick={goNext}>
-                            {currentIndex < total - 1 ? 'הבא' : 'סיים סקירה'}
+                            {currentIndex < total - 1 ? t('common.next') : t('common.finishReview')}
                         </Button>
                     </Box>
                 </Box>
             ) : (
                 <Box>
                     <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>
-                        סקירת תשובות – ניתן לערוך כל תשובה לפני המעבר למדור הבא.
+                        {t('common.reviewPrompt')}
                     </Typography>
                     <Box component="div">
                         {answers.map((item, idx) => (
-                            <Box
-                                key={item.id}
+                            <Box key={item.id}
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -129,27 +123,26 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
                                     borderRadius: 1,
                                 }}
                             >
-                                <Button
-                                    size="small"
-                                    onClick={() => handleEdit(idx)}
-                                    sx={{ minWidth: 32, mr: 1 }}
-                                >
-                                    ערוך
+                                <Button size="small" onClick={() => handleEdit(idx)}>
+                                    {t('common.edit')}
                                 </Button>
                                 <Typography variant="body2" sx={{ flex: 1, textAlign: 'right' }}>
-                                    {/* מציג label או sublabel */}
-                                    {(item as SymptomGroup).label || (item as SubSymptom).sublabel}
+                                    {('label' in item)
+                                        ? t(`questions.${item.id}.label`)
+                                        : t(`associated.${item.id}.label`)}
                                 </Typography>
-                                <Typography variant="body2" sx={{ width: 32, textAlign: 'center' }}>
-                                    {(item as any).ratingCurrent}
-                                </Typography>
+                                <Box sx={{ display: 'flex', gap: 1, width: 120, justifyContent: 'space-between' }}>
+                                    <Typography variant="caption">{(item as any).ratingBefore}</Typography>
+                                    <Typography variant="caption">{(item as any).ratingAfter}</Typography>
+                                    <Typography variant="caption">{(item as any).ratingCurrent}</Typography>
+                                </Box>
                             </Box>
                         ))}
                     </Box>
 
                     <Box sx={{ textAlign: 'center', mt: 2 }}>
                         <Button variant="contained" onClick={handleFinish}>
-                            המשך למדור הבא
+                            {t('common.continueNextSection')}
                         </Button>
                     </Box>
                 </Box>

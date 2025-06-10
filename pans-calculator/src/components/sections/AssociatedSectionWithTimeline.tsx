@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
 
@@ -25,6 +26,7 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
   items,
   onItemChange,
 }) => {
+  const { t } = useTranslation();
   const totalFields = items.length * 3;
   const filledCount = items.reduce((acc, item) => {
     let c = 0;
@@ -36,15 +38,15 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
   const progressPercent = Math.round((filledCount / totalFields) * 100);
 
   return (
-    <Box sx={{ mb: 4, direction: 'rtl' }}>
+    <Box sx={{ mb: 4 }}>
       <Typography variant="h6" gutterBottom>
-        II. תסמינים נלווים (0–5 בכל טווח זמן)
+        {t('associatedSection.title')}
       </Typography>
 
       {/* פס התקדמות */}
       <Box sx={{ width: '100%', mb: 2 }}>
         <Typography variant="body2" color="textSecondary" align="left">
-          {`${progressPercent}% הושלם`}
+          {t('common.completedPercent', { percent: progressPercent })}
         </Typography>
         <LinearProgress
           variant="determinate"
@@ -58,16 +60,16 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
         <TableHead>
           <TableRow>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '35%' }}>
-              תחום
+              {t('associatedSection.column.topic')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              שבוע לפני הופעה ראשונה
+              {t('timelines.beforeFirstWeek')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              שבוע אחרי הופעה ראשונה
+              {t('timelines.afterFirstWeek')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              7 ימים אחרונים
+              {t('timelines.last7Days')}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -75,7 +77,7 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell sx={{ textAlign: 'right' }}>
-                <Typography variant="body2">{item.label}</Typography>
+                <Typography variant="body2">{t(`associated.${item.id}.label`)}</Typography>
               </TableCell>
 
               <TableCell>

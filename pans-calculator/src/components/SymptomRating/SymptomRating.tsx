@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, Slider } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
 import { RatingValue } from '../../types/pansTypes';
 import './SymptomRating.scss'
@@ -24,94 +25,52 @@ interface SymptomRatingProps {
 }
 
 const SymptomRating: React.FC<SymptomRatingProps> = ({
-  id,
-  ratingBefore,
-  ratingAfter,
-  ratingCurrent,
-  onChange,
-  itemClass = '',
+  id, ratingBefore, ratingAfter, ratingCurrent, onChange, itemClass = ''
 }) => {
-  const marks = [
-    { value: 0, label: '0' },
-    { value: 1, label: '1' },
-    { value: 2, label: '2' },
-    { value: 3, label: '3' },
-    { value: 4, label: '4' },
-    { value: 5, label: '5' },
-  ];
+  const { t } = useTranslation();
+  const marks = [0, 1, 2, 3, 4, 5].map(v => ({ value: v, label: String(v) }));
 
   const handleSliderChange = (
     field: 'before' | 'after' | 'current',
-    _event: Event,
+    _e: Event,
     newValue: number | number[]
   ) => {
-    if (typeof newValue === 'number') {
-      onChange(id, field, newValue as RatingValue);
-    }
+    if (typeof newValue === 'number') onChange(id, field, newValue as RatingValue);
   };
 
   return (
-    <Box sx={{ direction: 'rtl', mb: 2 }}>
+    <Box sx={{ mb: 2 }} dir={t('dir')}>
       <Grid container spacing={2} alignItems="center">
-        {/* ===== טווח: שבוע לפני הופעה ראשונה ===== */}
-        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
-          <Typography variant="subtitle2" sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }} >
-            שבוע לפני הופעה ראשונה
-          </Typography>
-          <Slider
-            value={ratingBefore}
-            onChange={(e, val) => handleSliderChange('before', e, val)}
-            step={1}
-            min={0}
-            max={5}
-            marks={marks}
-            valueLabelDisplay="off"
-            aria-label={`${id}-before`}
-          />
-          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
-            {ratingDescriptions[ratingBefore]}
-          </Typography>
-        </Grid>
+        {(['beforeFirstWeek', 'afterFirstWeek', 'last7Days'] as const).map((key, i) => {
+          const value = key === 'beforeFirstWeek'
+            ? ratingBefore
+            : key === 'afterFirstWeek'
+              ? ratingAfter
+              : ratingCurrent;
+          const field = key === 'beforeFirstWeek'
+            ? 'before'
+            : key === 'afterFirstWeek'
+              ? 'after'
+              : 'current';
 
-        {/* ===== טווח: שבוע אחרי הופעה ראשונה ===== */}
-        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
-          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
-            שבוע אחרי הופעה ראשונה
-          </Typography>
-          <Slider
-            value={ratingAfter}
-            onChange={(e, val) => handleSliderChange('after', e, val)}
-            step={1}
-            min={0}
-            max={5}
-            marks={marks}
-            valueLabelDisplay="off"
-            aria-label={`${id}-after`}
-          />
-          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
-            {ratingDescriptions[ratingAfter]}
-          </Typography>
-        </Grid>
-
-        {/* ===== טווח: 7 ימים אחרונים ===== */}
-        <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
-          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
-            7 ימים אחרונים
-          </Typography>
-          <Slider
-            value={ratingCurrent}
-            onChange={(e, val) => handleSliderChange('current', e, val)}
-            step={1}
-            min={0}
-            max={5}
-            marks={marks}
-            valueLabelDisplay="off"
-            aria-label={`${id}-current`}
-          />
-          <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }} >
-            {ratingDescriptions[ratingCurrent]}
-          </Typography>
-        </Grid>
+          return (
+            <Grid size={{ xs: 12, md: 4 }} className={itemClass} key={key}>
+              <Typography variant="subtitle2" sx={{ mb: 0.5, textAlign: 'center', fontWeight: 'bold' }}>
+                {t(`timelines.${key}`)}
+              </Typography>
+              <Slider
+                value={value}
+                onChange={(e, v) => handleSliderChange(field, e, v)}
+                step={1} min={0} max={5} marks={marks}
+                valueLabelDisplay="off"
+                aria-label={`${id}-${field}`}
+              />
+              <Typography variant="caption" sx={{ mt: 0.5, display: 'block', textAlign: 'center' }}>
+                {t(`ratingDescriptions.${value}`)}
+              </Typography>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

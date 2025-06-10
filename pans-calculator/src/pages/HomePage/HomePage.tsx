@@ -1,68 +1,50 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  Modal,
-  IconButton,
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import InfoIcon from '@mui/icons-material/Info';
-import './HomePage.scss';
+import React, { useState } from "react";
+import { Box, Typography, Button, Container, Modal, IconButton } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import InfoIcon from "@mui/icons-material/Info";
+import { useTranslation } from "react-i18next";
+import "./HomePage.scss";
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const [openInfo, setOpenInfo] = useState(false);
-  const handleOpen = () => setOpenInfo(true);
-  const handleClose = () => setOpenInfo(false);
 
   return (
     <Box className="homepage-root">
-      {/* Hero Section */}
       <Box className="homepage-hero">
         <Container maxWidth="md" className="hero-content">
           <Typography variant="h2" className="hero-title">
-            מחשבון מדד פאנס/פאנדס
+            {t("home.title")}
           </Typography>
           <Typography variant="h6" className="hero-subtitle">
-            חשבו את המדד במהירות ובקלות
+            {t("home.subtitle")}
           </Typography>
-
           <Box className="hero-buttons">
-            <Button
-              component={RouterLink}
-              to="/scale"
-              variant="contained"
-              className="hero-button"
-              size="large"
-            >
-              התחל מדד
+            <Button component={RouterLink} to="/scale" variant="contained" className="hero-button" size="large">
+              {t("home.startButton")}
             </Button>
-            <IconButton
-              color="inherit"
-              className="info-button"
-              onClick={handleOpen}
-              aria-label="מידע"
-            >
+            <IconButton color="inherit" onClick={() => setOpenInfo(true)} aria-label={t("home.infoAria")}>
               <InfoIcon fontSize="large" />
             </IconButton>
           </Box>
+          <Typography className="hero-clinical-credit hero-subtitle" sx={{ mt: 2, color: '#fff', textAlign: 'center', marginTop: '40px' }}>
+            {t('home.clinicalCredit')}
+          </Typography>
         </Container>
-
-        {/* Modal עם הסברים קצרים */}
-        <Modal open={openInfo} onClose={handleClose}>
+        <Modal open={openInfo} onClose={() => setOpenInfo(false)}>
           <Box className="info-modal">
-            <Typography variant="h5" gutterBottom className="modal-title">
-              איך מחושב המדד?
+            <Typography variant="h5" className="modal-title" gutterBottom>
+              {t("home.modal.title")}
             </Typography>
-            <Typography variant="body1" className="modal-text">
-              1. סמנו דירוג (0–5) עבור תסמיני OCD.<br />
-              2. סמנו דירוג (0–5) עבור תסמינים נלווים (14 פריטים), קחו את חמשת הערכים הגבוהים וסכמו ⇒ 0–25.<br />
-              3. סמנו דירוג (0–5) לפגיעה תפקודית והכפילו ב־10 ⇒ 0–50.<br />
-              4. בסיום לחצו “חשב ניקוד” ותועברו לעמוד התוצאות.
-            </Typography>
-            <Button variant="outlined" onClick={handleClose} className="modal-close">
-              סגור
+            {(Array.isArray(t("home.modal.steps", { returnObjects: true }))
+              ? (t("home.modal.steps", { returnObjects: true }) as string[])
+              : []).map((line: string, i: number) => (
+                <Typography key={i} variant="body1" className="modal-text">
+                  {line}
+                </Typography>
+              ))}
+            <Button variant="outlined" onClick={() => setOpenInfo(false)} className="modal-close">
+              {t("home.modal.closeButton")}
             </Button>
           </Box>
         </Modal>

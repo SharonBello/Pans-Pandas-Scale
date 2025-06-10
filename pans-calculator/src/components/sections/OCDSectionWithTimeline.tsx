@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
+import { useTranslation } from 'react-i18next';
 
 interface OCDSectionProps {
     items: SymptomGroup[];
@@ -13,6 +14,7 @@ interface OCDSectionProps {
 }
 
 const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange }) => {
+    const { t } = useTranslation();
     // חישוב פס התקדמות מדור I:
     const totalFields = items.length * 3; // לכל סימפטום 3 דירוגים
     const filledCount = items.reduce((acc, item) => {
@@ -25,15 +27,15 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
     const progressPercent = Math.round((filledCount / totalFields) * 100);
 
     return (
-        <Box sx={{ mb: 4, direction: 'rtl' }}>
+        <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-                I. תסמיני OCD (OCD 0–5 בכל טווח זמן)
+                {t('ocdSection.title')}
             </Typography>
 
             {/* פס התקדמות */}
             <Box sx={{ width: '100%', mb: 2 }}>
                 <Typography variant="body2" color="textSecondary" align="left">
-                    {`${progressPercent}% הושלם`}
+                    {t('common.completedPercent', { percent: progressPercent })}
                 </Typography>
                 <LinearProgress
                     variant="determinate"
@@ -47,16 +49,16 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                 <TableHead>
                     <TableRow>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '35%' }}>
-                            תחום
+                            {t('ocdSection.column.topic')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            שבוע לפני הופעה ראשונה
+                            {t('timelines.beforeFirstWeek')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            שבוע אחרי הופעה ראשונה
+                            {t('timelines.afterFirstWeek')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            7 ימים אחרונים
+                            {t('timelines.last7Days')}
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -65,7 +67,7 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                         <TableRow key={item.id}>
                             {/* עמודה ראשונה: תיאור הסימפטום */}
                             <TableCell sx={{ textAlign: 'right' }}>
-                                <Typography variant="body2">{item.label}</Typography>
+                                <Typography variant="body2">{t(`questions.${item.id}.label`)}</Typography>
                             </TableCell>
 
                             {/* עמודות שלושת ה Sliders */}

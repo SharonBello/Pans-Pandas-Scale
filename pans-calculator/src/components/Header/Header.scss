@@ -1,7 +1,7 @@
 @import '../../styles/variables';
 
 .header-container {
-  background-color: $color-blue-primary !important;
+  background-color: none !important;
   color: $color-gray-light;
   box-shadow: none;
   text-align: center;
@@ -13,6 +13,7 @@
   align-items: center;
   padding: 0 1.5rem;
   min-height: 64px;
+  background-color: none !important;
 }
 
 .header-left {

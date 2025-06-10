@@ -11,12 +11,12 @@ import {
   TableBody,
   FormControlLabel,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { SymptomGroup, RatingValue } from '../../types/pansTypes';
 import './Sections.scss';
 
 interface FunctionalSectionProps {
   items: SymptomGroup[];
-  /** תיקון כאן: value: RatingValue במקום number */
   onItemChange: (id: string, value: RatingValue) => void;
 }
 
@@ -30,10 +30,11 @@ const levelDescriptions: Record<RatingValue, string> = {
 };
 
 const FunctionalSection: React.FC<FunctionalSectionProps> = ({ items, onItemChange }) => {
-  const symptom = items[0]; // יש רק פריט אחד כאן
+  const { t } = useTranslation();
+  const symptom = items[0];
 
   return (
-    <Box sx={{ mb: 4, direction: 'rtl' }}>
+    <Box sx={{ mb: 4 }}>
       <RadioGroup
         name={symptom.id}
         value={symptom.ratingCurrent.toString()}
@@ -43,21 +44,27 @@ const FunctionalSection: React.FC<FunctionalSectionProps> = ({ items, onItemChan
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>תיאור רמה</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>דרגה</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>בחירה</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', textAlign: 'right' }}>
+                {t('functionalSection.column.description')}
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                {t('functionalSection.column.level')}
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                {t('functionalSection.column.select')}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(levelDescriptions).map(([key, desc]) => (
-              <TableRow key={key}>
+            {([0, 1, 2, 3, 4, 5] as RatingValue[]).map((level) => (
+              <TableRow key={level}>
                 <TableCell sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2">{desc}</Typography>
+                  {t(`functionalSection.levelDescriptions.${level}`)}
                 </TableCell>
-                <TableCell align="center">{key}</TableCell>
+                <TableCell align="center">{level}</TableCell>
                 <TableCell align="center">
                   <FormControlLabel
-                    value={key}
+                    value={String(level)}
                     control={<Radio size="small" />}
                     label=""
                     sx={{ '& .MuiFormControlLabel-label': { display: 'none' } }}
@@ -69,13 +76,8 @@ const FunctionalSection: React.FC<FunctionalSectionProps> = ({ items, onItemChan
         </Table>
       </RadioGroup>
 
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        display="block"
-        sx={{ mt: 1, textAlign: 'right' }}
-      >
-        * בחרו שורה אחת המתאימה לרמת הפגיעה התפקודית (0–5).
+      <Typography variant="caption" color="textSecondary" display="block" sx={{ mt: 1, textAlign: 'right' }}>
+        {t('functionalSection.caption')}
       </Typography>
     </Box>
   );

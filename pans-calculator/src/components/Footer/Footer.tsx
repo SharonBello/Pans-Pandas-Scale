@@ -1,23 +1,23 @@
 import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
-import './Footer.scss'
+import { useTranslation } from 'react-i18next';
+import './Footer.scss';
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
-    <Box component="footer" className='footer-container'>
-      <Typography className='scale-info-origin'>
-        בהתבסס על הניסיון הקליני של ד"ר סוזן סוודו, ד"ר מירוסלאב קובצ'ביץ', ד"ר בת' לטימר וד"ר ג'יימס לקמן, בעזרתם של דיאנה פוהלמן, קית' מור והורים רבים נוספים.
-      </Typography>
-      <div className='footer-contact-rights-container'>
-        <Typography>
-          © 2025 Sharon Bello
+    <Box component="footer" className="footer-container">
+      <Box className="footer-contact-rights-container">
+        <Typography variant="body2">
+          {t('footer.copy')} {/* e.g. "© 2025 Sharon Bello" */}
         </Typography>
-        <Typography>
+        <Typography variant="body2">
           <Link href="mailto:sharonbellotech@gmail.com" underline="hover">
-            Gmail
+            {t('footer.contactEmail')} {/* e.g. "Gmail" */}
           </Link>
         </Typography>
-      </div>
+      </Box>
     </Box>
   );
 };
