@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, LinearProgress } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { RatingValue, SubSymptom, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';

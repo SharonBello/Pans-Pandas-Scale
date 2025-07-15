@@ -7,10 +7,9 @@ import {
   Modal,
   IconButton,
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import InfoIcon from '@mui/icons-material/Info';
 import './HomePage.scss';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const HomePage: React.FC = () => {
@@ -19,7 +18,6 @@ const HomePage: React.FC = () => {
   const [openExplanation, setOpenExplanation] = useState(false);
   const navigate = useNavigate();
 
-  const handleOpen = () => setOpenInfo(true);
   const handleClose = () => setOpenInfo(false);
 
   const handleStartScale = () => setOpenExplanation(true);

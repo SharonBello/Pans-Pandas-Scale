@@ -360,7 +360,7 @@ const CalculatorForm: React.FC = () => {
         {/* ===== מדור I: שאלון OCD "שאלה אחר שאלה" ===== */}
         {sectionIndex === 0 && (
           <SurveySection
-            title="survey.ocdTitle"
+            title={t('survey.ocdTitle')}
             items={ocdAnswers}
             onComplete={finishOcd}
             isFirstSection={true}
@@ -370,7 +370,7 @@ const CalculatorForm: React.FC = () => {
         {/* ===== מדור II: תתי־הסימפטומים ("NP") ===== */}
         {sectionIndex === 1 && (
           <SurveySection
-            title="survey.associatedTitle"
+            title={t('survey.associatedTitle')}
             items={assocAnswers}
             onComplete={finishAssoc}
             onGoBack={goBackToOCD}

@@ -92,7 +92,7 @@
   },
   "survey": {
     "ocdTitle": "I. תסמיני OCD",
-    "associatedTitle": "II. תסמיניפ נוירופסיכיאטריים נלווים",
+    "associatedTitle": "II. תסמינים נוירופסיכיאטריים נלווים",
     "finishFunctionalButton": "סיום תחום תפקודי",
     "allSectionsComplete": "כל התחומים הושלמו!",
     "calculateScoreButton": "חישוב ניקוד סופי"
@@ -117,7 +117,7 @@
   },
   "npDomains": {
     "anxiety": "תסמיני חרדה (0–5)",
-    "moodiness": "תנודות مزاج קיצוניות/דיכאון (0–5)",
+    "moodiness": "תנודות קיצוניות/דיכאון (0–5)",
     "irritability": "רגזנות/התנהגות אגרסיבית (0–5)",
     "cognitive": "סימפטומים קוגניטיביים/למידה, בלבול (0–5)",
     "regression": "נסיגה התנהגותית (0–5)",
