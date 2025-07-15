@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {  Box } from '@mui/material';
-import Header from './components/Header/Header';
+// import Header from './components/Header/Header';
 import HomePage from './pages/HomePage/HomePage';
 import ScalePage from './pages/ScalePage/ScalePage';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
@@ -12,7 +12,7 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Box display="flex" flexDirection="column" minHeight="100vh" className='app-container'>
-        <Header />
+        {/* <Header /> */}
 
         <Box component="main" flexGrow={1} className='main-container'>
           <Routes>

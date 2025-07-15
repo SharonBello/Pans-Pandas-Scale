@@ -7,13 +7,13 @@
 }
 
 .scale-title {
-  font-family: $font-header;
+  font-family: $main-font;
   color: $color-blue-primary-dark;
   margin-top: 2rem;
 }
 
 .scale-explanation {
-  font-family: $font-body;
+  font-family: $main-font;
   color: $color-dark-gray;
   margin-bottom: 2rem;
 }
@@ -23,4 +23,15 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba($color-gray, 0.1);
   padding: 2rem;
+
+  .MuiBox-root {
+    .MuiPaper-root {
+      .MuiBox-root {
+        .category-title {
+          color: $color-accent;
+          align-self: center;
+        }
+      }
+    }
+  }
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Box,
   Typography,
-  LinearProgress,
   Table,
   TableHead,
   TableRow,
@@ -19,38 +18,27 @@ interface AssociatedSectionProps {
     field: 'before' | 'after' | 'current',
     value: RatingValue
   ) => void;
+  currentIndex?: number;
+  total?: number;
 }
 
 const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
   items,
   onItemChange,
+  currentIndex = 0,
+  total = 0,
 }) => {
-  const totalFields = items.length * 3;
-  const filledCount = items.reduce((acc, item) => {
-    let c = 0;
-    if (item.ratingBefore > 0) c++;
-    if (item.ratingAfter > 0) c++;
-    if (item.ratingCurrent > 0) c++;
-    return acc + c;
-  }, 0);
-  const progressPercent = Math.round((filledCount / totalFields) * 100);
-
   return (
     <Box sx={{ mb: 4, direction: 'rtl' }}>
-      <Typography variant="h6" gutterBottom>
-        II. תסמינים נלווים (0–5 בכל טווח זמן)
-      </Typography>
-
-      {/* פס התקדמות */}
-      <Box sx={{ width: '100%', mb: 2 }}>
-        <Typography variant="body2" color="textSecondary" align="left">
-          {`${progressPercent}% הושלם`}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          II. תסמינים נלווים (0–5 בכל טווח זמן)
         </Typography>
-        <LinearProgress
-          variant="determinate"
-          value={progressPercent}
-          sx={{ height: 8, borderRadius: 4 }}
-        />
+        {total > 0 && (
+          <Typography variant="h6" color="textSecondary">
+            {`שאלה ${currentIndex + 1} מתוך ${total}`}
+          </Typography>
+        )}
       </Box>
 
       {/* טבלה עם כל הסימפטומים ה־Associated וה־Sliders שלהם */}
@@ -85,10 +73,9 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
                   ratingBefore={item.ratingBefore}
                   ratingAfter={0}
                   ratingCurrent={0}
+                  showSingle="before"
                   onChange={(id, field, value) => {
-                    if (field === 'before') {
-                      onItemChange(item.id, 'before', value);
-                    }
+                    onItemChange(item.id, field, value);
                   }}
                 />
               </TableCell>
@@ -99,10 +86,9 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
                   ratingBefore={0}
                   ratingAfter={item.ratingAfter}
                   ratingCurrent={0}
+                  showSingle="after"
                   onChange={(id, field, value) => {
-                    if (field === 'after') {
-                      onItemChange(item.id, 'after', value);
-                    }
+                    onItemChange(item.id, field, value);
                   }}
                 />
               </TableCell>
@@ -113,10 +99,9 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
                   ratingBefore={0}
                   ratingAfter={0}
                   ratingCurrent={item.ratingCurrent}
+                  showSingle="current"
                   onChange={(id, field, value) => {
-                    if (field === 'current') {
-                      onItemChange(item.id, 'current', value);
-                    }
+                    onItemChange(item.id, field, value);
                   }}
                 />
               </TableCell>

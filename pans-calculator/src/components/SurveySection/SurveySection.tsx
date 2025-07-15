@@ -3,10 +3,11 @@ import {
     Box,
     Typography,
     Button,
-    LinearProgress,
 } from '@mui/material';
 import { RatingValue, SymptomGroup, SubSymptom } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
+import './SurveySection.scss'
+import { useNavigate } from 'react-router-dom';
 
 type SurveyItem = SymptomGroup | SubSymptom;
 
@@ -14,12 +15,15 @@ interface SurveySectionProps {
     title: string;
     items: SurveyItem[];
     onComplete: (answers: SurveyItem[]) => void;
+    onGoBack?: () => void;
+    isFirstSection?: boolean;
 }
 
-const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete }) => {
+const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete, onGoBack, isFirstSection = false }) => {
     const [answers, setAnswers] = useState<SurveyItem[]>([...items]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [mode, setMode] = useState<'survey' | 'review'>('survey');
+    const navigate = useNavigate();
 
     const total = items.length;
 
@@ -48,7 +52,19 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
 
     const goBack = () => {
         if (currentIndex > 0) {
+            // Within section: go to previous question
             setCurrentIndex(idx => idx - 1);
+        } else {
+            // At first question of section
+            if (isFirstSection) {
+                // First section: go back to homepage
+                navigate('/');
+            } else {
+                // Not first section: go back to previous section
+                if (onGoBack) {
+                    onGoBack();
+                }
+            }
         }
     };
 
@@ -63,23 +79,19 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
 
     return (
         <Box sx={{ mb: 4, direction: 'rtl' }}>
-            <Typography variant="h6" gutterBottom>
-                {title}
-            </Typography>
-
             {mode === 'survey' ? (
                 <Box>
-                    <Typography variant="body2" color="textSecondary" align="left" sx={{ mb: 1 }}>
-                        {`שאלה ${currentIndex + 1} מתוך ${total}`}
-                    </Typography>
-                    <LinearProgress
-                        variant="determinate"
-                        value={Math.round(((currentIndex + 1) / total) * 100)}
-                        sx={{ height: 8, borderRadius: 4, mb: 2 }}
-                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }} className='section-title-container'>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }} className='section-title'>
+                            {title}
+                        </Typography>
+                        <Typography color="textSecondary">
+                            {`שאלה ${currentIndex + 1} מתוך ${total}`}
+                        </Typography>
+                    </Box>
 
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1" sx={{ mb: 1, textAlign: 'right' }}>
+                        <Typography sx={{ mb: 1, mt:2, textAlign: 'center', fontWeight: 'bold', fontFamily: 'Heebo' }}>
                             {/* כאן נציג label (OCD) או sublabel (SubSymptom) */}
                             {(answers[currentIndex] as SymptomGroup).label ||
                                 (answers[currentIndex] as SubSymptom).sublabel}
@@ -98,20 +110,17 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button
-                            variant="text"
-                            disabled={currentIndex === 0}
-                            onClick={goBack}
-                        >
-                            חזור
-                        </Button>
-                        <Button variant="contained" onClick={goNext}>
+                        <Button variant="text"   onClick={goBack}>חזור</Button>
+                        <Button variant="contained" onClick={goNext} className='next-btn'>
                             {currentIndex < total - 1 ? 'הבא' : 'סיים סקירה'}
                         </Button>
                     </Box>
                 </Box>
             ) : (
                 <Box>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold' }} gutterBottom>
+                        {title}
+                    </Typography>
                     <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>
                         סקירת תשובות – ניתן לערוך כל תשובה לפני המעבר למדור הבא.
                     </Typography>
@@ -129,13 +138,7 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
                                     borderRadius: 1,
                                 }}
                             >
-                                <Button
-                                    size="small"
-                                    onClick={() => handleEdit(idx)}
-                                    sx={{ minWidth: 32, mr: 1 }}
-                                >
-                                    ערוך
-                                </Button>
+                                <Button size="small" onClick={() => handleEdit(idx)} sx={{ minWidth: 32, mr: 1 }}>ערוך</Button>
                                 <Typography variant="body2" sx={{ flex: 1, textAlign: 'right' }}>
                                     {/* מציג label או sublabel */}
                                     {(item as SymptomGroup).label || (item as SubSymptom).sublabel}
@@ -148,8 +151,8 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete 
                     </Box>
 
                     <Box sx={{ textAlign: 'center', mt: 2 }}>
-                        <Button variant="contained" onClick={handleFinish}>
-                            המשך למדור הבא
+                        <Button variant="contained" onClick={handleFinish} className='next-btn'>
+                            המשך לחלק הבא
                         </Button>
                     </Box>
                 </Box>

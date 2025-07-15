@@ -4,12 +4,13 @@
   max-width: 800px;
   margin: 16px auto;
   border-radius: 12px;
-  background-color: $color-gray-light;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  background-color: $color-background;
+  box-shadow: 0 2px 8px rgba(14, 13, 38, 0.08);
+  border: 1px solid $color-light;
 
   .question-card__label {
-    font-family: $font-header;
-    color: $color-blue-primary-dark;
+    font-family: $main-font;
+    color: $color-primary;
     font-size: 1rem;
     margin-bottom: 16px;
     text-align: right;
@@ -20,60 +21,60 @@
     padding: 0 16px 24px 16px;
     direction: rtl;
 
-    // מחזור צבעים עבור כל עמודה:
-    // nth-of-type(3n+1) – רקע הכי בהיר
-    // nth-of-type(3n+2) – רקע קצת כהה יותר
-    // nth-of-type(3n+3) – רקע עוד קצת כהה יותר
+    // Light and airy medical theme backgrounds
     .rating-grid-item:nth-of-type(3n + 1) {
-      background-color: $color-bg-cream;   // קרם בהיר (#FFFDEB)
+      background-color: $color-background;
+      border: 1px solid $color-light;
       border-radius: 8px;
       padding: 12px;
     }
     .rating-grid-item:nth-of-type(3n + 2) {
-      background-color: $color-bg-light;   // אפור-לבן עדין (#F7F7FC)
+      background-color: $color-light;
+      border: 1px solid $color-medium;
       border-radius: 8px;
       padding: 12px;
     }
     .rating-grid-item:nth-of-type(3n + 3) {
-      background-color: $color-gray-medium;  // אפור בינוני בהיר (#E3E3E5)
+      background-color: $color-medium;
+      border: 1px solid $color-primary;
       border-radius: 8px;
       padding: 12px;
     }
 
-    // עיצוב של הסליידרים בתוכו עדיין לפי ה־Theme:
+    // Light and airy slider styling
     .MuiSlider-rail {
-      color: $color-gray-medium;
+      color: $color-light;
       opacity: 1;
     }
 
     .MuiSlider-track {
-      color: $color-blue-accent;
+      color: $color-medium;
     }
 
     .MuiSlider-thumb {
-      background-color: $color-blue-primary-dark;
-      border: 2px solid $color-blue-primary;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      background-color: $color-background;
+      border: 2px solid $color-primary;
+      box-shadow: 0 2px 4px rgba(14, 13, 38, 0.15);
     }
 
     .MuiSlider-mark {
-      background-color: $color-blue-primary-light;
+      background-color: $color-primary;
     }
 
     .MuiSlider-markLabel {
-      color: $color-dark-gray;
-      font-family: $font-body;
+      color: $color-primary;
+      font-family: $main-font;
       font-size: 0.85rem;
     }
 
     .MuiTypography-subtitle2 {
-      font-family: $font-body;
-      color: $color-dark-gray;
+      font-family: $main-font;
+      color: $color-primary;
     }
 
     .MuiTypography-caption {
-      font-family: $font-body;
-      color: $color-gray;
+      font-family: $main-font;
+      color: $color-medium;
       font-size: 0.85rem;
     }
   }

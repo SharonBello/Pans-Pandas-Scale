@@ -344,24 +344,36 @@ const CalculatorForm: React.FC = () => {
     navigate('/results', { state: { formData, scores } });
   };
 
+  // 9. פונקציות חזרה למדור הקודם
+  const goBackToOCD = () => {
+    setSectionIndex(0);
+  };
+
+  const goBackToAssociated = () => {
+    setSectionIndex(1);
+  };
+
   return (
     <Box sx={{ width: '100%', mb: 4 }}>
       <Paper elevation={3} sx={{ p: 2, maxWidth: 900, mx: 'auto' }}>
-        {/* ===== מדור I: שאלון OCD “שאלה אחר שאלה” ===== */}
+        {/* ===== מדור I: שאלון OCD "שאלה אחר שאלה" ===== */}
         {sectionIndex === 0 && (
           <SurveySection
             title="I. תסמיני OCD"
             items={ocdAnswers}
             onComplete={finishOcd}
+            isFirstSection={true}
           />
         )}
 
-        {/* ===== מדור II: תתי־הסימפטומים (“NP”) ===== */}
+        {/* ===== מדור II: תתי־הסימפטומים ("NP") ===== */}
         {sectionIndex === 1 && (
           <SurveySection
             title="II. תסמינים נוירו-פסיכיאטריים נלווים"
             items={assocAnswers}
             onComplete={finishAssoc}
+            onGoBack={goBackToOCD}
+            isFirstSection={false}
           />
         )}
 
@@ -382,7 +394,10 @@ const CalculatorForm: React.FC = () => {
                 ]);
               }}
             />
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button variant="text" onClick={goBackToAssociated}>
+                חזור
+              </Button>
               <Button variant="contained" onClick={() => finishFunctional(funcAnswers)}>
                 סיים מדור III
               </Button>
@@ -394,7 +409,7 @@ const CalculatorForm: React.FC = () => {
         {sectionIndex === 3 && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h6" gutterBottom>
-              כל המדורים הושלמו!
+              כל החלקים הושלמו!
             </Typography>
             <Button variant="contained" size="large" onClick={handleCalculate}>
               חשב ניקוד סופי

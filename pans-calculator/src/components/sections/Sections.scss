@@ -4,27 +4,31 @@
 .survey-section {
   padding: 32px;
   direction: rtl;
-  background-color: $color-bg-light;
+  background-color: $color-background;
   max-width: 900px;
   margin: 0 auto;
 
   .MuiTypography-h5 {
-    font-family: $font-header;
-    color: $color-blue-primary-dark;
+    font-family: $main-font;
+    color: $color-primary;
     font-size: 1.6rem;
     margin-bottom: 24px;
     text-align: center;
   }
 
   .MuiLinearProgress-root {
-    height: 12px;
-    border-radius: 6px;
-    background-color: $color-gray-medium;
-    margin-bottom: 24px;
+    height: 12px !important;
+    border-radius: 6px !important;
+    background-color: $color-light !important;
+    margin-bottom: 24px !important;
+    max-width: 50% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 50% !important;
   }
 
   .MuiLinearProgress-bar {
-    background-color: $color-blue-accent !important;
+    background: linear-gradient(90deg, $color-medium, $color-primary) !important;
   }
 
   .survey-buttons {
@@ -38,8 +42,30 @@
 
     .MuiButton-root {
       min-width: 120px;
-      font-family: $font-body;
+      font-family: $main-font;
       font-size: 0.95rem;
+      border-radius: 8px;
+      text-transform: none;
+      
+      &.MuiButton-contained {
+        background-color: $color-primary;
+        color: $color-background;
+        
+        &:hover {
+          background-color: $color-darkest;
+        }
+      }
+      
+      &.MuiButton-outlined {
+        background-color: $color-background;
+        color: $color-primary;
+        border: 2px solid $color-light;
+        
+        &:hover {
+          background-color: $color-light;
+          border-color: $color-medium;
+        }
+      }
     }
   }
 
@@ -49,28 +75,28 @@
     border-collapse: collapse;
 
     .MuiTableCell-root {
-      border-bottom: 1px solid $color-gray-medium;
+      border-bottom: 1px solid $color-light;
       padding: 14px 10px;
-      font-family: $font-body;
-      color: $color-dark-gray;
+      font-family: $main-font;
+      color: $color-primary;
     }
 
     .MuiTableHead-root {
-      background-color: $color-gray-light;
+      background-color: $color-light;
 
       .MuiTableCell-root {
         font-weight: 600;
         text-align: center;
-        color: $color-blue-primary-dark;
+        color: $color-primary;
       }
     }
 
     .MuiTableRow-root:nth-of-type(odd) {
-      background-color: $color-bg-cream;
+      background-color: $color-background;
     }
 
     .MuiTableRow-root:hover {
-      background-color: rgba(66, 78, 139, 0.05);
+      background-color: rgba(167, 213, 242, 0.1);
     }
   }
 

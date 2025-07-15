@@ -1,19 +1,33 @@
-// דוגמא נוספת, אם תרצה:
-$font-header: 'Signika', sans-serif;
-$font-body:   'SF Pro', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300&display=swap');
 
-// גווני כחול
-$color-blue-primary:      #424E8B; // כחול בינוני
-$color-blue-primary-dark: #222D72; // כחול כהה
-$color-blue-primary-light:#717DBC; // כחול בהיר יותר
-$color-blue-accent:       #8294F9; // כחול אקצנט
+$main-font: 'Heebo', sans-serif;
 
-// גווני אפור / לבן
-$color-gray-light:        #F8F7FC; // אפור בהיר מאוד / לבן מעונן
-$color-gray-medium:       #E3E3E5; // אפור בינוני בהיר
-$color-gray:              #929292; // אפור נייטרלי
-$color-dark-gray:              #1b1b1b; // אפור נייטרלי
+// Medical Theme Color Palette - Light and Airy
+$color-darkest:           #0E0D26; // Deep navy - Primary text, darkest elements
+$color-primary:           #023373; // Medical blue - Primary actions, headers  
+$color-medium:            #6CA6D9; // Professional blue - Secondary elements
+$color-light:             #A7D5F2; // Light blue - Highlights, hover states
+$color-background:        #F2F2F2; // Clean background - Main background
+$color-accent:            #E67E22; // Warm orange - Accent, alerts, current states
 
-// גווני רקע קרירים
-$color-bg-cream:          #FFFDEB; // קרם בהיר (לרקע או הדגשה קלה)
-$color-bg-light:          #F7F7FC; // רקע אפור-לבן עדין
+// Severity Color Scale
+$severity-0: #4CAF50;  // Green - No symptoms
+$severity-1: #8BC34A;  // Light green - Minimal
+$severity-2: #FFC107;  // Yellow - Mild
+$severity-3: #FF9800;  // Orange - Moderate
+$severity-4: #FF5722;  // Deep orange - Severe
+$severity-5: #F44336;  // Red - Extreme
+
+// Main Color Variables
+$color-blue-primary:      #023373;
+$color-blue-primary-dark: #0E0D26;
+$color-blue-primary-light:#6CA6D9;
+$color-blue-accent:       #A7D5F2;
+
+$color-gray-light:        #F2F2F2;
+$color-gray-medium:       #A7D5F2;
+$color-gray:              #6CA6D9;
+$color-dark-gray:         #0E0D26;
+
+$color-bg-cream:          #F2F2F2;
+$color-bg-light:          #F2F2F2;

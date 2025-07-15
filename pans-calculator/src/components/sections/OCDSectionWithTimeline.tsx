@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, LinearProgress, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
 
@@ -10,36 +10,22 @@ interface OCDSectionProps {
         field: 'before' | 'after' | 'current',
         value: RatingValue
     ) => void;
+    currentIndex?: number;
+    total?: number;
 }
 
-const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange }) => {
-    // חישוב פס התקדמות מדור I:
-    const totalFields = items.length * 3; // לכל סימפטום 3 דירוגים
-    const filledCount = items.reduce((acc, item) => {
-        let c = 0;
-        if (item.ratingBefore > 0) c++;
-        if (item.ratingAfter > 0) c++;
-        if (item.ratingCurrent > 0) c++;
-        return acc + c;
-    }, 0);
-    const progressPercent = Math.round((filledCount / totalFields) * 100);
-
+const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange, currentIndex = 0, total = 0 }) => {
     return (
         <Box sx={{ mb: 4, direction: 'rtl' }}>
-            <Typography variant="h6" gutterBottom>
-                I. תסמיני OCD (OCD 0–5 בכל טווח זמן)
-            </Typography>
-
-            {/* פס התקדמות */}
-            <Box sx={{ width: '100%', mb: 2 }}>
-                <Typography variant="body2" color="textSecondary" align="left">
-                    {`${progressPercent}% הושלם`}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                    I. תסמיני OCD (OCD 0–5 בכל טווח זמן)
                 </Typography>
-                <LinearProgress
-                    variant="determinate"
-                    value={progressPercent}
-                    sx={{ height: 8, borderRadius: 4 }}
-                />
+                {total > 0 && (
+                    <Typography variant="h6" color="textSecondary">
+                        {`שאלה ${currentIndex + 1} מתוך ${total}`}
+                    </Typography>
+                )}
             </Box>
 
             {/* טבלה עם כל הסימפטומים וה־Sliders שלהם */}
@@ -76,10 +62,9 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                                     ratingBefore={item.ratingBefore}
                                     ratingAfter={0}
                                     ratingCurrent={0}
+                                    showSingle="before"
                                     onChange={(id, field, value) => {
-                                        if (field === 'before') {
-                                            onItemChange(item.id, 'before', value);
-                                        }
+                                        onItemChange(item.id, field, value);
                                     }}
                                 />
                             </TableCell>
@@ -90,10 +75,9 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                                     ratingBefore={0}
                                     ratingAfter={item.ratingAfter}
                                     ratingCurrent={0}
+                                    showSingle="after"
                                     onChange={(id, field, value) => {
-                                        if (field === 'after') {
-                                            onItemChange(item.id, 'after', value);
-                                        }
+                                        onItemChange(item.id, field, value);
                                     }}
                                 />
                             </TableCell>
@@ -104,10 +88,9 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                                     ratingBefore={0}
                                     ratingAfter={0}
                                     ratingCurrent={item.ratingCurrent}
+                                    showSingle="current"
                                     onChange={(id, field, value) => {
-                                        if (field === 'current') {
-                                            onItemChange(item.id, 'current', value);
-                                        }
+                                        onItemChange(item.id, field, value);
                                     }}
                                 />
                             </TableCell>
