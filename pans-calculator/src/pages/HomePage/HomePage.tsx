@@ -11,8 +11,10 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import InfoIcon from '@mui/icons-material/Info';
 import './HomePage.scss';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const [openInfo, setOpenInfo] = useState(false);
   const [openExplanation, setOpenExplanation] = useState(false);
   const navigate = useNavigate();
@@ -29,16 +31,14 @@ const HomePage: React.FC = () => {
 
   return (
     <Box className="homepage-root">
-      {/* Hero Section */}
       <Box className="homepage-hero">
         <Container maxWidth="md" className="hero-content">
           <Typography variant="h2" className="hero-title">
-            מחשבון מדד פאנס/פאנדס
+            {t("home.title")}
           </Typography>
           <Typography variant="h6" className="hero-subtitle">
-            חשבו את המדד במהירות ובקלות
+            {t("home.subtitle")}
           </Typography>
-
           <Box className="hero-buttons">
             <Button
               onClick={handleStartScale}
@@ -48,22 +48,15 @@ const HomePage: React.FC = () => {
             >
               התחל מדד
             </Button>
-            <IconButton
-              color="inherit"
-              className="info-button"
-              onClick={handleOpen}
-              aria-label="מידע"
-            >
+            <IconButton color="inherit" onClick={() => setOpenInfo(true)} aria-label={t("home.infoAria")}>
               <InfoIcon fontSize="large" />
             </IconButton>
           </Box>
         </Container>
-
-        {/* Modal עם הסברים קצרים */}
-        <Modal open={openInfo} onClose={handleClose}>
+        <Modal open={openInfo} onClose={() => setOpenInfo(false)}>
           <Box className="info-modal">
-            <Typography variant="h5" gutterBottom className="modal-title">
-              איך מחושב המדד?
+            <Typography variant="h5" className="modal-title" gutterBottom>
+              {t("home.modal.title")}
             </Typography>
             <Typography variant="body1" className="modal-text">
               1. סמנו דירוג (0–5) עבור תסמיני OCD.<br />

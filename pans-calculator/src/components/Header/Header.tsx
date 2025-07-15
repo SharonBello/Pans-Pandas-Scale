@@ -1,6 +1,7 @@
 // src/components/Header/Header.tsx
 import React from 'react';
 import { AppBar, Toolbar, Typography, Box, IconButton } from '@mui/material';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import './Header.scss';
 // אם ברצונכם להשתמש בלוגו SVG שייבאתם כ־ReactComponent, אפשר לייבא אותו כאן:
 // import { ReactComponent as Logo } from '../../logo.svg';
@@ -9,6 +10,9 @@ const Header: React.FC = () => {
   return (
     <AppBar position="static" className="header-container">
       <Toolbar className="header-toolbar">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <LanguageSwitcher />
+        </Box>
         {/* לוגו בצד שמאל (לא חובה, אך אם תרצו להחזירו, הסירו את ההערה) */}
         {/* <Box className="header-left"> */}
         {/*
@@ -16,9 +20,9 @@ const Header: React.FC = () => {
             <Logo className="header-logo" width={32} height={32} />
           </IconButton>
           */}
-        <Typography variant="h6" component="div" className="header-title">
+        {/* <Typography variant="h6" component="div" className="header-title">
           מדד פאנס/פאנדס
-        </Typography>
+        </Typography> */}
         {/* </Box> */}
 
         {/* אם תרצו ליישר אלמנטים בצד ימין (כגון כפתורי תפריט), ניתן להוסיף אותם כאן */}

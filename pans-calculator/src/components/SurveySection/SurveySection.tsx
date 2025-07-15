@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import {
-    Box,
-    Typography,
-    Button,
-} from '@mui/material';
-import { RatingValue, SymptomGroup, SubSymptom } from '../../types/pansTypes';
+import { Box, Typography, Button, LinearProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { RatingValue, SubSymptom, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
 import './SurveySection.scss'
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +17,7 @@ interface SurveySectionProps {
 }
 
 const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete, onGoBack, isFirstSection = false }) => {
+    const { t } = useTranslation();
     const [answers, setAnswers] = useState<SurveyItem[]>([...items]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [mode, setMode] = useState<'survey' | 'review'>('survey');
@@ -83,7 +81,7 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete,
                 <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }} className='section-title-container'>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }} className='section-title'>
-                            {title}
+                            {t(title)}
                         </Typography>
                         <Typography color="textSecondary">
                             {`שאלה ${currentIndex + 1} מתוך ${total}`}
@@ -122,12 +120,11 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete,
                         {title}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>
-                        סקירת תשובות – ניתן לערוך כל תשובה לפני המעבר למדור הבא.
+                        {t('common.reviewPrompt')}
                     </Typography>
                     <Box component="div">
                         {answers.map((item, idx) => (
-                            <Box
-                                key={item.id}
+                            <Box key={item.id}
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -140,12 +137,15 @@ const SurveySection: React.FC<SurveySectionProps> = ({ title, items, onComplete,
                             >
                                 <Button size="small" onClick={() => handleEdit(idx)} sx={{ minWidth: 32, mr: 1 }}>ערוך</Button>
                                 <Typography variant="body2" sx={{ flex: 1, textAlign: 'right' }}>
-                                    {/* מציג label או sublabel */}
-                                    {(item as SymptomGroup).label || (item as SubSymptom).sublabel}
+                                    {('label' in item)
+                                        ? t(`questions.${item.id}.label`)
+                                        : t(`associated.${item.id}.label`)}
                                 </Typography>
-                                <Typography variant="body2" sx={{ width: 32, textAlign: 'center' }}>
-                                    {(item as any).ratingCurrent}
-                                </Typography>
+                                <Box sx={{ display: 'flex', gap: 1, width: 120, justifyContent: 'space-between' }}>
+                                    <Typography variant="caption">{(item as any).ratingBefore}</Typography>
+                                    <Typography variant="caption">{(item as any).ratingAfter}</Typography>
+                                    <Typography variant="caption">{(item as any).ratingCurrent}</Typography>
+                                </Box>
                             </Box>
                         ))}
                     </Box>

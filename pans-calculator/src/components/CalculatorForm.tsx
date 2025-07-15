@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import './sections/Sections.scss';
 import { PansFormData, RatingValue, SubSymptom, SurveyItem, SymptomGroup } from '../types/pansTypes';
 import SurveySection from './SurveySection/SurveySection';
@@ -9,6 +9,7 @@ import FunctionalSection from './sections/FunctionalSection';
 import { computeScores } from '../utils/computeScores';
 
 const CalculatorForm: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   // 1. הגדרת הנתונים ההתחלתיים לכל קבוצה
@@ -354,12 +355,12 @@ const CalculatorForm: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', mb: 4 }}>
+    <Box sx={{ width: '100%', mb: 4 }} dir={t('dir')}>
       <Paper elevation={3} sx={{ p: 2, maxWidth: 900, mx: 'auto' }}>
         {/* ===== מדור I: שאלון OCD "שאלה אחר שאלה" ===== */}
         {sectionIndex === 0 && (
           <SurveySection
-            title="I. תסמיני OCD"
+            title="survey.ocdTitle"
             items={ocdAnswers}
             onComplete={finishOcd}
             isFirstSection={true}
@@ -369,15 +370,13 @@ const CalculatorForm: React.FC = () => {
         {/* ===== מדור II: תתי־הסימפטומים ("NP") ===== */}
         {sectionIndex === 1 && (
           <SurveySection
-            title="II. תסמינים נוירו-פסיכיאטריים נלווים"
+            title="survey.associatedTitle"
             items={assocAnswers}
             onComplete={finishAssoc}
             onGoBack={goBackToOCD}
             isFirstSection={false}
           />
         )}
-
-        {/* ===== מדור III: פגיעה תפקודית – טבלה אנכית ===== */}
         {sectionIndex === 2 && (
           <>
             <FunctionalSection
@@ -399,20 +398,18 @@ const CalculatorForm: React.FC = () => {
                 חזור
               </Button>
               <Button variant="contained" onClick={() => finishFunctional(funcAnswers)}>
-                סיים מדור III
+                {t('survey.finishFunctionalButton')}
               </Button>
             </Box>
           </>
         )}
-
-        {/* ===== שלב סופי: כפתור חישוב סופי ===== */}
         {sectionIndex === 3 && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h6" gutterBottom>
               כל החלקים הושלמו!
             </Typography>
             <Button variant="contained" size="large" onClick={handleCalculate}>
-              חשב ניקוד סופי
+              {t('survey.calculateScoreButton')}
             </Button>
           </Box>
         )}

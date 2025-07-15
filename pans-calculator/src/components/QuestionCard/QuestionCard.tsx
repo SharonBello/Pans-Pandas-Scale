@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import './QuestionCard.scss';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
@@ -10,12 +11,14 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, onAnswer }) => {
+  const { t } = useTranslation();
+
   return (
     <Card className="question-card">
       <CardContent>
         {/* תווית השאלה */}
         <Typography className="question-card__label">
-          {question.label}
+          {t(`questions.${question.id}.label`)}
         </Typography>
 
         {/* תיבת הרייטינג (שלושת הסלאידרים) */}

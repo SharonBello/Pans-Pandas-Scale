@@ -8,6 +8,7 @@ import {
   TableCell,
   TableBody,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
 
@@ -22,12 +23,9 @@ interface AssociatedSectionProps {
   total?: number;
 }
 
-const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
-  items,
-  onItemChange,
-  currentIndex = 0,
-  total = 0,
-}) => {
+const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({ items, onItemChange, currentIndex = 0, total = 0, }) => {
+  const {t} = useTranslation()
+
   return (
     <Box sx={{ mb: 4, direction: 'rtl' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -46,16 +44,16 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
         <TableHead>
           <TableRow>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '35%' }}>
-              תחום
+              {t('associatedSection.column.topic')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              שבוע לפני הופעה ראשונה
+              {t('timelines.beforeFirstWeek')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              שבוע אחרי הופעה ראשונה
+              {t('timelines.afterFirstWeek')}
             </TableCell>
             <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-              7 ימים אחרונים
+              {t('timelines.last7Days')}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -63,7 +61,7 @@ const AssociatedSectionWithTimeline: React.FC<AssociatedSectionProps> = ({
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell sx={{ textAlign: 'right' }}>
-                <Typography variant="body2">{item.label}</Typography>
+                <Typography variant="body2">{t(`associated.${item.id}.label`)}</Typography>
               </TableCell>
 
               <TableCell>

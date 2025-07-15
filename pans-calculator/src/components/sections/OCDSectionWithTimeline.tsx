@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { RatingValue, SymptomGroup } from '../../types/pansTypes';
 import SymptomRating from '../SymptomRating/SymptomRating';
+import { useTranslation } from 'react-i18next';
 
 interface OCDSectionProps {
     items: SymptomGroup[];
@@ -15,6 +16,8 @@ interface OCDSectionProps {
 }
 
 const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange, currentIndex = 0, total = 0 }) => {
+    const { t } = useTranslation()
+
     return (
         <Box sx={{ mb: 4, direction: 'rtl' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -33,16 +36,16 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                 <TableHead>
                     <TableRow>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '35%' }}>
-                            תחום
+                            {t('ocdSection.column.topic')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            שבוע לפני הופעה ראשונה
+                            {t('timelines.beforeFirstWeek')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            שבוע אחרי הופעה ראשונה
+                            {t('timelines.afterFirstWeek')}
                         </TableCell>
                         <TableCell align="center" sx={{ fontWeight: 'bold', width: '20%' }}>
-                            7 ימים אחרונים
+                            {t('timelines.last7Days')}
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -51,7 +54,7 @@ const OCDSectionWithTimeline: React.FC<OCDSectionProps> = ({ items, onItemChange
                         <TableRow key={item.id}>
                             {/* עמודה ראשונה: תיאור הסימפטום */}
                             <TableCell sx={{ textAlign: 'right' }}>
-                                <Typography variant="body2">{item.label}</Typography>
+                                <Typography variant="body2">{t(`questions.${item.id}.label`)}</Typography>
                             </TableCell>
 
                             {/* עמודות שלושת ה Sliders */}

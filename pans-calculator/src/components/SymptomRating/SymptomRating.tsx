@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
 import { RatingValue } from '../../types/pansTypes';
 import './SymptomRating.scss'
@@ -33,6 +34,8 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
   itemClass = '',
   showSingle,
 }) => {
+  const { t } = useTranslation()
+
   const handleSliderChange = (
     field: 'before' | 'after' | 'current',
     event: React.ChangeEvent<HTMLInputElement>
@@ -65,16 +68,16 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
 
   React.useEffect(() => {
     if (showSingle) {
-      const value = showSingle === 'before' ? ratingBefore : 
-                   showSingle === 'after' ? ratingAfter : ratingCurrent;
+      const value = showSingle === 'before' ? ratingBefore :
+        showSingle === 'after' ? ratingAfter : ratingCurrent;
       updateFill(value, `fill-${id}-${showSingle}`);
-      
+
       // Update fill color based on severity
       const fillElement = document.getElementById(`fill-${id}-${showSingle}`);
       if (fillElement) {
         fillElement.style.background = getSeverityColor(value);
       }
-      
+
       // Add click listeners for labels
       const labels = document.querySelectorAll(`#labels-${id}-${showSingle} span`);
       labels.forEach((label, index) => {
@@ -84,28 +87,28 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
         };
         label.addEventListener('click', clickHandler);
       });
-      
+
       // Cleanup
       return () => {
         const labels = document.querySelectorAll(`#labels-${id}-${showSingle} span`);
         labels.forEach((label) => {
-          label.removeEventListener('click', () => {});
+          label.removeEventListener('click', () => { });
         });
       };
     } else {
       updateFill(ratingBefore, `fill-${id}-before`);
       updateFill(ratingAfter, `fill-${id}-after`);
       updateFill(ratingCurrent, `fill-${id}-current`);
-      
+
       // Update fill colors based on severity
       const fillBefore = document.getElementById(`fill-${id}-before`);
       const fillAfter = document.getElementById(`fill-${id}-after`);
       const fillCurrent = document.getElementById(`fill-${id}-current`);
-      
+
       if (fillBefore) fillBefore.style.background = getSeverityColor(ratingBefore);
       if (fillAfter) fillAfter.style.background = getSeverityColor(ratingAfter);
       if (fillCurrent) fillCurrent.style.background = getSeverityColor(ratingCurrent);
-      
+
       // Add click listeners for labels
       const addLabelClickListeners = (field: 'before' | 'after' | 'current') => {
         const labels = document.querySelectorAll(`#labels-${id}-${field} span`);
@@ -117,20 +120,20 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
           label.addEventListener('click', clickHandler);
         });
       };
-      
+
       addLabelClickListeners('before');
       addLabelClickListeners('after');
       addLabelClickListeners('current');
-      
+
       // Cleanup
       return () => {
         const removeListeners = (field: 'before' | 'after' | 'current') => {
           const labels = document.querySelectorAll(`#labels-${id}-${field} span`);
           labels.forEach((label) => {
-            label.removeEventListener('click', () => {});
+            label.removeEventListener('click', () => { });
           });
         };
-        
+
         removeListeners('before');
         removeListeners('after');
         removeListeners('current');
@@ -140,13 +143,13 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
 
   // Single slider for table view
   if (showSingle) {
-    const value = showSingle === 'before' ? ratingBefore : 
-                 showSingle === 'after' ? ratingAfter : ratingCurrent;
-    
+    const value = showSingle === 'before' ? ratingBefore :
+      showSingle === 'after' ? ratingAfter : ratingCurrent;
+
     return (
       <div className="single-slider-wrapper">
-        <div 
-          className="slider-wrapper" 
+        <div
+          className="slider-wrapper"
           dir="ltr"
           onClick={(e) => handleTrackClick(e, showSingle)}
         >
@@ -175,7 +178,7 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
   }
 
   return (
-    <Box sx={{ direction: 'rtl', mb: 2 }}>
+    <Box sx={{ mb: 2 }} dir={t('dir')}>
       <Grid container spacing={2} alignItems="center">
         {/* ===== טווח: שבוע לפני הופעה ראשונה ===== */}
         <Grid size={{ xs: 12, md: 4 }} className={itemClass}>
@@ -183,8 +186,8 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             <div className="slider-label">
               <span>שבוע לפני הופעה ראשונה</span>
             </div>
-            <div 
-              className="slider-wrapper" 
+            <div
+              className="slider-wrapper"
               dir="ltr"
               onClick={(e) => handleTrackClick(e, 'before')}
             >
@@ -208,7 +211,7 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
               <span>4</span>
               <span>5</span>
             </div>
-            <Typography 
+            <Typography
               className="rating-description"
               style={{ color: getSeverityColor(ratingBefore) }}
             >
@@ -223,8 +226,8 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             <div className="slider-label">
               <span>שבוע אחרי הופעה ראשונה</span>
             </div>
-            <div 
-              className="slider-wrapper" 
+            <div
+              className="slider-wrapper"
               dir="ltr"
               onClick={(e) => handleTrackClick(e, 'after')}
             >
@@ -248,7 +251,7 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
               <span>4</span>
               <span>5</span>
             </div>
-            <Typography 
+            <Typography
               className="rating-description"
               style={{ color: getSeverityColor(ratingAfter) }}
             >
@@ -263,8 +266,8 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
             <div className="slider-label">
               <span>7 ימים אחרונים</span>
             </div>
-            <div 
-              className="slider-wrapper" 
+            <div
+              className="slider-wrapper"
               dir="ltr"
               onClick={(e) => handleTrackClick(e, 'current')}
             >
@@ -288,7 +291,7 @@ const SymptomRating: React.FC<SymptomRatingProps> = ({
               <span>4</span>
               <span>5</span>
             </div>
-            <Typography 
+            <Typography
               className="rating-description"
               style={{ color: getSeverityColor(ratingCurrent) }}
             >

@@ -1,5 +1,3 @@
-// src/pages/ResultsPage/ResultsPage.tsx
-
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -13,6 +11,7 @@ import {
   Button,
   Box,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import {
   PansFormData,
   SubSymptom,
@@ -31,6 +30,7 @@ const sumTop5 = (arr: number[]) =>
   [...arr].sort((a, b) => b - a).slice(0, 5).reduce((sum, v) => sum + v, 0);
 
 const ResultsPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as ResultsState | undefined;
@@ -104,136 +104,79 @@ const ResultsPage: React.FC = () => {
   const totalScore_current = totalSymp_current + func_current;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, direction: 'rtl' }} className='results-container'>
+    <Container maxWidth="lg" sx={{ py: 4 }} dir={t('dir')}>
       <Typography variant="h4" gutterBottom align="center">
-        תוצאות מדד פאנס/פאנדס
+        {t('resultsPage.title')}
       </Typography>
 
       <Table className="results-table printable-area" sx={{ mb: 4 }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
-              תחום / סימפטום
-            </TableCell>
-            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
-              שבוע לפני הופעה ראשונה
-            </TableCell>
-            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
-              שבוע אחרי הופעה ראשונה
-            </TableCell>
-            <TableCell sx={{ backgroundColor: '#717DBC', color: '#FFF', fontWeight: 'bold', fontSize: '1rem' }}>
-              7 ימים אחרונים
-            </TableCell>
+            <TableCell>{t('resultsPage.column.topic')}</TableCell>
+            <TableCell align="center">{t('timelines.beforeFirstWeek')}</TableCell>
+            <TableCell align="center">{t('timelines.afterFirstWeek')}</TableCell>
+            <TableCell align="center">{t('timelines.last7Days')}</TableCell>
           </TableRow>
         </TableHead>
-
         <TableBody>
-          {/** ===== שורה 1: OCD (סיכום) ===== */}
-          <TableRow className='worst-ocd-symptoms'>
-            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-              תסמיני OCD (0–25) <br />
-              (5 × החמור ביותר של תסמיני ה-OCD)
+          <TableRow>
+            <TableCell>
+              {t('resultsPage.row.ocdSummary')}
             </TableCell>
             <TableCell align="center">{scoreOCD_before}</TableCell>
             <TableCell align="center">{scoreOCD_after}</TableCell>
             <TableCell align="center">{scoreOCD_current}</TableCell>
           </TableRow>
 
-          {/** ===== שורה 2: NP (כותרת ראשית) ===== */}
           <TableRow>
-            <TableCell colSpan={4} sx={{ fontWeight: 'bold', fontSize: '0.95rem', textAlign: 'right' }} >
-              תסמינים נוירו-פסיכיאטריים נלווים (0–25) <br />
-              (סכום חמשת התחומים החמורים מתוך 7 תחומי ה-NP)
+            <TableCell colSpan={4}>
+              {t('resultsPage.row.npHeader')}
             </TableCell>
           </TableRow>
-
-          {/** ===== שורות 3–13: כל אחד מ־11 התחומים הראשיים ושיעורו בכל טווח ===== */}
-          {allDomains.map((domainKey) => {
-            const labelHeb = NP_DOMAIN_LABELS[domainKey];
-            const rb = domainRatingsBefore[domainKey];
-            const ra = domainRatingsAfter[domainKey];
-            const rc = domainRatingsCurrent[domainKey];
-
-            return (
-              <TableRow key={domainKey} className='domain-container'>
-                <TableCell sx={{ textAlign: 'right' }}>{labelHeb}</TableCell>
-                <TableCell align="center">{rb}</TableCell>
-                <TableCell align="center">{ra}</TableCell>
-                <TableCell align="center">{rc}</TableCell>
-              </TableRow>
-            );
-          })}
-
-          {/** ===== שורת סיכום NP: סכום 5 התחומים החמורים ביותר ===== */}
-          <TableRow className="results-table__summary-associated">
-            <TableCell sx={{ textAlign: 'right' }}>
-              סך תסמינים NP (חמשת התחומים החמורים ביותר)
-            </TableCell>
-            <TableCell align="center">
-              {scoreAssoc_before}
-            </TableCell>
-            <TableCell align="center">
-              {scoreAssoc_after}
-            </TableCell>
-            <TableCell align="center">
-              {scoreAssoc_current}
-            </TableCell>
-          </TableRow>
-
-          <TableRow className="results-table__summary-totalsymptoms">
-            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-              סך כל הסימפטומים (0–50)
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalSymp_before}
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalSymp_after}
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalSymp_current}
-            </TableCell>
+          {allDomains.map(domainKey => (
+            <TableRow key={domainKey}>
+              <TableCell>{t(`npDomains.${domainKey}`)}</TableCell>
+              <TableCell align="center">{domainRatingsBefore[domainKey]}</TableCell>
+              <TableCell align="center">{domainRatingsAfter[domainKey]}</TableCell>
+              <TableCell align="center">{domainRatingsCurrent[domainKey]}</TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell>{t('resultsPage.row.npSummary')}</TableCell>
+            <TableCell align="center">{scoreAssoc_before}</TableCell>
+            <TableCell align="center">{scoreAssoc_after}</TableCell>
+            <TableCell align="center">{scoreAssoc_current}</TableCell>
           </TableRow>
 
           <TableRow>
-            <TableCell sx={{ textAlign: 'right', fontWeight: 'bold' }}>
-              פגיעה תפקודית (0–50)
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_before}</TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_after}</TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>{func_current}</TableCell>
+            <TableCell>{t('resultsPage.row.totalSymptoms')}</TableCell>
+            <TableCell align="center">{totalSymp_before}</TableCell>
+            <TableCell align="center">{totalSymp_after}</TableCell>
+            <TableCell align="center">{totalSymp_current}</TableCell>
           </TableRow>
 
-          <TableRow className="results-table__summary-totalscore">
-            <TableCell
-              sx={{
-                backgroundColor: '#E3E3E5',
-                fontWeight: 'bold',
-                fontSize: '0.95rem',
-                textAlign: 'right',
-              }}>
-              מדד פאנס/פאנדס (0–100)
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalScore_before}
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalScore_after}
-            </TableCell>
-            <TableCell align="center" sx={{ fontWeight: 'bold' }}>
-              {totalScore_current}
-            </TableCell>
+          <TableRow>
+            <TableCell>{t('resultsPage.row.functional')}</TableCell>
+            <TableCell align="center">{func_before}</TableCell>
+            <TableCell align="center">{func_after}</TableCell>
+            <TableCell align="center">{func_current}</TableCell>
+          </TableRow>
+
+          <TableRow>
+            <TableCell>{t('resultsPage.row.totalScore')}</TableCell>
+            <TableCell align="center">{totalScore_before}</TableCell>
+            <TableCell align="center">{totalScore_after}</TableCell>
+            <TableCell align="center">{totalScore_current}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
 
-      {/** ===== לחצני פעולה ===== */}
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-        <Button variant="outlined" onClick={() => navigate('/')} className='return-to-start-btn'>
-          חזרה להתחלה
+        <Button variant="outlined" onClick={() => navigate('/')}>
+          {t('resultsPage.backButton')}
         </Button>
-        <Button variant="contained" onClick={() => window.print()} className='print-results-btn'>
-          הדפס תוצאות
+        <Button variant="contained" onClick={() => window.print()}>
+          {t('resultsPage.printButton')}
         </Button>
       </Box>
     </Container>
